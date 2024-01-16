@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="text_color">#263238</color>
+    <color name="primary_color">#E0E0E0</color>
+    <color name="start_color">#FFB74D</color>
+    <color name="center_color">#FFD180</color>
+    <color name="end_color">#FFCC80</color>
+    <color name="orange_button_stroke_color">#827717</color>
+    <color name="grey_button_color">#ECEFF1</color>
+    <color name="grey_button_stroke_color">#CFD8DC</color>
+    <color name="text_hint_color">#B9B9B9</color>
+    <color name="button_secondary_color">#EAD62D</color>
+</resources>
