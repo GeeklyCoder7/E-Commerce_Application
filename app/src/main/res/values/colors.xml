@@ -9,7 +9,13 @@
     <color name="end_color">#FFCC80</color>
     <color name="orange_button_stroke_color">#827717</color>
     <color name="grey_button_color">#ECEFF1</color>
-    <color name="grey_button_stroke_color">#CFD8DC</color>
+    <color name="stroke_color">#CFD8DC</color>
     <color name="text_hint_color">#B9B9B9</color>
     <color name="button_secondary_color">#EAD62D</color>
+    <color name="search_section_background_start_color">#80DEEA</color>
+    <color name="search_section_background_center_color">#80CBC4</color>
+    <color name="search_section_background_end_color">#B9F6CA</color>
+    <color name="location_section_start_color">#B2EBF2</color>
+    <color name="location_section_center_color">#B2DFDB</color>
+    <color name="location_section_end_color">#C8E6C9</color>
 </resources>
