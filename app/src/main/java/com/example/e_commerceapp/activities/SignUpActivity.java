@@ -14,16 +14,22 @@ import com.example.e_commerceapp.databinding.ActivitySignUpBinding;
 import com.example.e_commerceapp.databinding.ActivitySigninBinding;
 import com.example.e_commerceapp.models.UserModel;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class SignUpActivity extends AppCompatActivity {
     ActivitySignUpBinding binding;
     private FirebaseAuth auth;
     String firstAndLastName = "", emailAddress = "", password = "", userId = "";
     UserModel userModel;
+    private FirebaseDatabase database;
+    private DatabaseReference databaseReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +39,8 @@ public class SignUpActivity extends AppCompatActivity {
 
         //Initializing variables
         auth = FirebaseAuth.getInstance();
+        database = FirebaseDatabase.getInstance();
+        databaseReference = database.getReference();
 
         binding.signUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -53,9 +61,9 @@ public class SignUpActivity extends AppCompatActivity {
                     if (!binding.confirmPasswordSignUpEditText.getText().toString().equals(binding.passwordSignUpEditText.getText().toString())) {
                         binding.confirmPasswordSignUpEditText.setError("Passwords do not match.");
                     }
-                    if (binding.passwordSignUpEditText.getText().toString().length() < 6) {
-                        binding.passwordSignUpEditText.setError("Password must be at least 6 characters.");
-                    }
+//                    if (binding.passwordSignUpEditText.getText().toString().length() < 6) {
+//                        binding.passwordSignUpEditText.setError("Password must be at least 6 characters.");
+//                    }
                 } else {
                     firstAndLastName = binding.firstAndLastNameSignUpEditText.getText().toString();
                     emailAddress = binding.emailSignUpEditText.getText().toString();
@@ -67,15 +75,13 @@ public class SignUpActivity extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
-                                Toast.makeText(SignUpActivity.this, "UserModel created with email and /password", Toast.LENGTH_SHORT).show();
                                 FirebaseUser user = auth.getCurrentUser();
+                                assert user != null;
                                 userId = user.getUid();
                                 userModel = new UserModel(firstAndLastName, emailAddress, password, userId);
-                                resetEveryThing();
-                                binding.signUpActivityLinearLayout.setVisibility(View.VISIBLE);
-                                binding.signUpActivityProgressBar.setVisibility(View.GONE);
-                                startActivity(new Intent(SignUpActivity.this, SignInActivity.class));
-                                finish();
+
+                                //Adding the newly created user and it's details to the database
+                                addUserToDatabase(userModel);
                             } else {
                                 Toast.makeText(SignUpActivity.this, "Failed to create user", Toast.LENGTH_SHORT).show();
                                 binding.signUpActivityLinearLayout.setVisibility(View.VISIBLE);
@@ -86,6 +92,14 @@ public class SignUpActivity extends AppCompatActivity {
                 }
             }
         });
+
+        binding.goToSignInActivityTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(SignUpActivity.this, SignInActivity.class));
+                finish();
+            }
+        });
     }
 
     void resetEveryThing() {
@@ -93,5 +107,26 @@ public class SignUpActivity extends AppCompatActivity {
         binding.emailSignUpEditText.setText("");
         binding.passwordSignUpEditText.setText("");
         binding.confirmPasswordSignUpEditText.setText("");
+    }
+
+    void addUserToDatabase(UserModel userModel) {
+        DatabaseReference usersNodeRef = databaseReference.child("users");
+        DatabaseReference specificUserRef = usersNodeRef.child(userModel.getUserId());
+        specificUserRef.setValue(userModel).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+                Toast.makeText(SignUpActivity.this, "Account created successfully.", Toast.LENGTH_SHORT).show();
+                resetEveryThing();
+                binding.signUpActivityLinearLayout.setVisibility(View.VISIBLE);
+                binding.signUpActivityProgressBar.setVisibility(View.GONE);
+                startActivity(new Intent(SignUpActivity.this, SignInActivity.class));
+                finish();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(SignUpActivity.this, "Failed to create an account.", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

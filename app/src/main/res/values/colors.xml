@@ -18,4 +18,7 @@
     <color name="location_section_start_color">#B2EBF2</color>
     <color name="location_section_center_color">#B2DFDB</color>
     <color name="location_section_end_color">#C8E6C9</color>
+    <color name="category_recyclerview_background_start_color">#FFAB91</color>
+    <color name="category_recyclerview_background_center_color">#EFEBE9</color>
+    <color name="category_recyclerview_background_end_color">#A5D6A7</color>
 </resources>

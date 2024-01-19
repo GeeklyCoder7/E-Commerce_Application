@@ -59,10 +59,19 @@ public class SignInActivity extends AppCompatActivity {
                             } else {
                                 binding.signInProgressBar.setVisibility(View.GONE);
                                 binding.signInLinearLayout.setVisibility(View.VISIBLE);
+                                Toast.makeText(SignInActivity.this, "Failed to login", Toast.LENGTH_SHORT).show();
                             }
                         }
                     });
                 }
+            }
+        });
+
+        binding.goToSignUpActivityTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(SignInActivity.this, SignUpActivity.class));
+                finish();
             }
         });
     }

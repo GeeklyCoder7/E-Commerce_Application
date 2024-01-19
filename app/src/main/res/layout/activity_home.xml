@@ -33,7 +33,7 @@
             android:textSize="16sp" />
 
         <ImageView
-            android:id="@+id/imageView2"
+            android:id="@+id/searchIcon"
             android:layout_width="100dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -98,7 +98,16 @@
                     android:textAlignment="center"
                     android:textColor="@color/black"
                     android:textSize="14sp" />
+
             </LinearLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/categoriesRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/category_recyclerview_gradient_background_drawable"
+                android:orientation="horizontal"
+                android:padding="10dp" />
         </LinearLayout>
     </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>
