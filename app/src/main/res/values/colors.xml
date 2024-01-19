@@ -21,4 +21,6 @@
     <color name="category_recyclerview_background_start_color">#FFAB91</color>
     <color name="category_recyclerview_background_center_color">#EFEBE9</color>
     <color name="category_recyclerview_background_end_color">#A5D6A7</color>
+        <color name="add_to_cart_button_background_color">#FFC400</color>
+        <color name="product_image_background_grey_color">#F5F5F5</color>
 </resources>

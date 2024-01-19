@@ -2,7 +2,6 @@ package com.example.e_commerceapp.activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.helper.widget.Carousel;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
@@ -11,7 +10,6 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -19,8 +17,10 @@ import android.view.WindowManager;
 
 import com.example.e_commerceapp.R;
 import com.example.e_commerceapp.adapters.CategoryAdapter;
+import com.example.e_commerceapp.adapters.ProductAdapter;
 import com.example.e_commerceapp.databinding.ActivityHomeBinding;
 import com.example.e_commerceapp.models.CategoryModel;
+import com.example.e_commerceapp.models.ProductModel;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -36,6 +36,8 @@ public class HomeActivity extends AppCompatActivity {
     ArrayList<CategoryModel> categoryModelArrayList;
     private FirebaseDatabase database;
     private DatabaseReference databaseReference;
+    ArrayList<CarouselItem> carouselItemArrayList;
+    ArrayList<ProductModel> productModelArrayList;
     @SuppressLint("UseCompatLoadingForDrawables")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,10 +49,14 @@ public class HomeActivity extends AppCompatActivity {
         categoryModelArrayList = new ArrayList<>();
         database = FirebaseDatabase.getInstance();
         databaseReference = database.getReference();
+        carouselItemArrayList = new ArrayList<>();
+        productModelArrayList = new ArrayList<>();
 
         //Calling necessary functions here
         setStatusBarColor();
         fetchCategories();
+        populateCarousel();
+        fetchRandomProducts();
 
         binding.searchIcon.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -58,7 +64,11 @@ public class HomeActivity extends AppCompatActivity {
                 startActivity(new Intent(HomeActivity.this, SignUpActivity.class));
             }
         });
+
+        binding.offersAndNewsCarousel.registerLifecycle(getLifecycle());
     }
+
+    //Function for setting the gradient drawable as the background of the status bar
     private void setStatusBarColor() {
         // Checking if the Android version is Lollipop or higher
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -71,18 +81,20 @@ public class HomeActivity extends AppCompatActivity {
         }
     }
 
+    //Function for fetching the categories from the database
     void fetchCategories() {
-        DatabaseReference categoriesNodeRef = databaseReference.child("categories");
-        categoriesNodeRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        DatabaseReference specificCategoryRef = databaseReference.child("categories");
+        specificCategoryRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                categoryModelArrayList.clear();
                 for (DataSnapshot categoriesSnapshot : snapshot.getChildren()) {
                     CategoryModel categoryModel = categoriesSnapshot.getValue(CategoryModel.class);
                     if (categoryModel != null) {
                         categoryModelArrayList.add(categoryModel);
                     }
                 }
-                setUpRecyclerView();
+                setUpCategoriesRecyclerView();
             }
 
             @Override
@@ -92,9 +104,50 @@ public class HomeActivity extends AppCompatActivity {
         });
     }
 
-    void setUpRecyclerView() {
+    //Function for setting up the categories recycler view
+    void setUpCategoriesRecyclerView() {
         CategoryAdapter categoryAdapter = new CategoryAdapter(HomeActivity.this, categoryModelArrayList);
         binding.categoriesRecyclerView.setLayoutManager(new LinearLayoutManager(HomeActivity.this, LinearLayoutManager.HORIZONTAL, false));
         binding.categoriesRecyclerView.setAdapter(categoryAdapter);
+    }
+
+    //function to populate or initialize the Carousel
+    void populateCarousel() {
+        carouselItemArrayList.add(new CarouselItem(R.drawable.placeholder, "Placeholder for testing"));
+        carouselItemArrayList.add(new CarouselItem(R.drawable.placeholder, "Placeholder for testing"));
+        carouselItemArrayList.add(new CarouselItem(R.drawable.placeholder, "Placeholder for testing"));
+        carouselItemArrayList.add(new CarouselItem(R.drawable.placeholder, "Placeholder for testing"));
+        carouselItemArrayList.add(new CarouselItem(R.drawable.placeholder, "Placeholder for testing"));
+        binding.offersAndNewsCarousel.setData(carouselItemArrayList);
+    }
+
+    //Function for setting up the recycler view for the random products
+    void setUpRandomProductsRecyclerView() {
+        ProductAdapter productAdapter = new ProductAdapter(HomeActivity.this, productModelArrayList);
+        binding.randomProductsRecyclerView.setLayoutManager(new LinearLayoutManager(HomeActivity.this));
+        binding.randomProductsRecyclerView.setAdapter(productAdapter);
+    }
+
+    //Function for fetching random products from the database
+    void fetchRandomProducts() {
+        DatabaseReference specificProductRef = databaseReference.child("products");
+        specificProductRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                productModelArrayList.clear();
+                for (DataSnapshot specificProductSnapshot : snapshot.getChildren()) {
+                    ProductModel product = specificProductSnapshot.getValue(ProductModel.class);
+                    if (product != null) {
+                        productModelArrayList.add(product);
+                    }
+                }
+                setUpRandomProductsRecyclerView();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 }

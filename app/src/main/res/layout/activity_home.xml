@@ -40,16 +40,18 @@
             app:srcCompat="@drawable/baseline_search_24" />
     </LinearLayout>
 
-    <ScrollView
+    <androidx.core.widget.NestedScrollView
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="@color/primary_color"
+        android:fillViewport="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/searchSectionLinearLayout">
 
         <LinearLayout
+            android:id="@+id/scrollViewLinearLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
@@ -107,7 +109,28 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/category_recyclerview_gradient_background_drawable"
                 android:orientation="horizontal"
-                android:padding="10dp" />
+                android:padding="10dp"></androidx.recyclerview.widget.RecyclerView>
+
+            <org.imaginativeworld.whynotimagecarousel.ImageCarousel
+                android:id="@+id/offersAndNewsCarousel"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:background="@color/white"
+                app:autoPlay="true"
+                app:autoPlayDelay="2000"
+                app:autoWidthFixing="true"
+                app:imageScaleType="fitCenter"
+                app:showBottomShadow="false"
+                app:showNavigationButtons="false"
+                app:showTopShadow="false">
+
+            </org.imaginativeworld.whynotimagecarousel.ImageCarousel>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/randomProductsRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
         </LinearLayout>
-    </ScrollView>
+    </androidx.core.widget.NestedScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>
