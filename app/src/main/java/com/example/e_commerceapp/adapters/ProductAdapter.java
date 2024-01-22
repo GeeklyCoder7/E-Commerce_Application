@@ -1,15 +1,18 @@
 package com.example.e_commerceapp.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.e_commerceapp.R;
+import com.example.e_commerceapp.activities.ProductDetailsShowingActivity;
 import com.example.e_commerceapp.databinding.ProductCardSampleLayoutBinding;
 import com.example.e_commerceapp.models.ProductModel;
 
@@ -38,6 +41,15 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductA
         holder.binding.productTitleTextView.setText(productModel.getProductName());
         holder.binding.productDescriptionTextView.setText(productModel.getProductDescription());
         holder.binding.productPriceTextView.setText("" + productModel.getProductPrice());
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent productObjectSendingIntent = new Intent(context, ProductDetailsShowingActivity.class);
+                productObjectSendingIntent.putExtra("productModel", productModel);
+                context.startActivity(productObjectSendingIntent);
+            }
+        });
     }
 
     @Override

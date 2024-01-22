@@ -89,7 +89,7 @@
                     android:textStyle="normal" />
 
                 <Button
-                    android:id="@+id/addToCartButton"
+                    android:id="@+id/homeScreenAddToCartButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:backgroundTint="@color/add_to_cart_button_background_color"

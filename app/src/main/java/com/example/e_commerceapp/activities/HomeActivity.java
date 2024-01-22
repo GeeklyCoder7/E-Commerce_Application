@@ -30,6 +30,8 @@ import com.google.firebase.database.ValueEventListener;
 import org.imaginativeworld.whynotimagecarousel.model.CarouselItem;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 
 public class HomeActivity extends AppCompatActivity {
     ActivityHomeBinding binding;
@@ -141,6 +143,7 @@ public class HomeActivity extends AppCompatActivity {
                         productModelArrayList.add(product);
                     }
                 }
+                Collections.shuffle(productModelArrayList);
                 setUpRandomProductsRecyclerView();
             }
 
