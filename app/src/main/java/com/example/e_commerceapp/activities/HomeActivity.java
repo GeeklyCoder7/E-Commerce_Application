@@ -20,7 +20,9 @@ import com.example.e_commerceapp.adapters.CategoryAdapter;
 import com.example.e_commerceapp.adapters.ProductAdapter;
 import com.example.e_commerceapp.databinding.ActivityHomeBinding;
 import com.example.e_commerceapp.models.CategoryModel;
+import com.example.e_commerceapp.models.ConstantValues;
 import com.example.e_commerceapp.models.ProductModel;
+import com.example.e_commerceapp.models.UserModel;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -30,7 +32,6 @@ import com.google.firebase.database.ValueEventListener;
 import org.imaginativeworld.whynotimagecarousel.model.CarouselItem;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 
 public class HomeActivity extends AppCompatActivity {
@@ -85,8 +86,8 @@ public class HomeActivity extends AppCompatActivity {
 
     //Function for fetching the categories from the database
     void fetchCategories() {
-        DatabaseReference specificCategoryRef = databaseReference.child("categories");
-        specificCategoryRef.addValueEventListener(new ValueEventListener() {
+        DatabaseReference categoriesNodeRef = databaseReference.child("categories");
+        categoriesNodeRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 categoryModelArrayList.clear();
@@ -125,15 +126,15 @@ public class HomeActivity extends AppCompatActivity {
 
     //Function for setting up the recycler view for the random products
     void setUpRandomProductsRecyclerView() {
-        ProductAdapter productAdapter = new ProductAdapter(HomeActivity.this, productModelArrayList);
+        ProductAdapter productAdapter = new ProductAdapter(HomeActivity.this, productModelArrayList, ConstantValues.FLAG_ADAPTER_CALLED_THROUGH_HOME_ACTIVITY);
         binding.randomProductsRecyclerView.setLayoutManager(new LinearLayoutManager(HomeActivity.this));
         binding.randomProductsRecyclerView.setAdapter(productAdapter);
     }
 
     //Function for fetching random products from the database
     void fetchRandomProducts() {
-        DatabaseReference specificProductRef = databaseReference.child("products");
-        specificProductRef.addValueEventListener(new ValueEventListener() {
+        DatabaseReference productsNodeRef = databaseReference.child("products");
+        productsNodeRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 productModelArrayList.clear();

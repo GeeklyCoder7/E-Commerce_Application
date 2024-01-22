@@ -41,4 +41,9 @@ public class UserModel {
     public void setUserId(String userId) {
         this.userId = userId;
     }
+
+    public static class Constants {
+        static final int FLAG_RECYCLER_CALLED_THROUGH_HOME_ACTIVITY = 1;
+        static final int FLAG_RECYCLER_CALLED_THROUGH_PRODUCT_DETAILS_ACTIVITY = 2;
+    }
 }
