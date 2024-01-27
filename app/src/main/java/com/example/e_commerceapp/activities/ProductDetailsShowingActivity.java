@@ -6,15 +6,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Html;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.example.e_commerceapp.R;
 import com.example.e_commerceapp.adapters.ProductAdapter;
 import com.example.e_commerceapp.databinding.ActivityProductDetailsShowingBinding;
-import com.example.e_commerceapp.models.ConstantValues;
+import com.example.e_commerceapp.utils.ConstantValues;
 import com.example.e_commerceapp.models.ProductModel;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -78,7 +75,7 @@ public class ProductDetailsShowingActivity extends AppCompatActivity {
                 productModelArrayList.clear();
                 for (DataSnapshot specificProductSnapShot : snapshot.getChildren()) {
                     ProductModel product = specificProductSnapShot.getValue(ProductModel.class);
-                    if (product != null) {
+                    if (product != null && !product.getProductId().equals(productId)) {
                         productModelArrayList.add(product);
                     }
                 }

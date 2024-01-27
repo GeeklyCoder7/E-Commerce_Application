@@ -1,4 +1,4 @@
-package com.example.e_commerceapp.models;
+package com.example.e_commerceapp.utils;
 
 public class ConstantValues {
     public static final int FLAG_ADAPTER_CALLED_THROUGH_HOME_ACTIVITY = 1;

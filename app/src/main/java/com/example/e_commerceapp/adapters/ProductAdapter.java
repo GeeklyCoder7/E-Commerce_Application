@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -15,7 +14,7 @@ import com.example.e_commerceapp.R;
 import com.example.e_commerceapp.activities.ProductDetailsShowingActivity;
 import com.example.e_commerceapp.databinding.DetailsActivityRandomProductsSuggestionsSampleLayoutBinding;
 import com.example.e_commerceapp.databinding.ProductCardSampleLayoutBinding;
-import com.example.e_commerceapp.models.ConstantValues;
+import com.example.e_commerceapp.utils.ConstantValues;
 import com.example.e_commerceapp.models.ProductModel;
 
 import java.util.ArrayList;
