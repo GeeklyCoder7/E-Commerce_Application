@@ -11,9 +11,11 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import com.example.e_commerceapp.R;
 import com.example.e_commerceapp.adapters.CategoryAdapter;
@@ -22,6 +24,7 @@ import com.example.e_commerceapp.databinding.ActivityHomeBinding;
 import com.example.e_commerceapp.models.CategoryModel;
 import com.example.e_commerceapp.utils.ConstantValues;
 import com.example.e_commerceapp.models.ProductModel;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -68,6 +71,23 @@ public class HomeActivity extends AppCompatActivity {
         });
 
         binding.offersAndNewsCarousel.registerLifecycle(getLifecycle());
+
+        binding.bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                if (item.getItemId() == R.id.userMenuItem) {
+                    Toast.makeText(HomeActivity.this, "Users", Toast.LENGTH_SHORT).show();
+                    item.setChecked(true);
+                } else if (item.getItemId() == R.id.cartMenuItem) {
+                    Toast.makeText(HomeActivity.this, "Cart", Toast.LENGTH_SHORT).show();
+                    item.setChecked(true);
+                } else if (item.getItemId() == R.id.ordersMenuItem) {
+                    Toast.makeText(HomeActivity.this, "Orders", Toast.LENGTH_SHORT).show();
+                    item.setChecked(true);
+                }
+                return false;
+            }
+        });
     }
 
     //Function for setting the gradient drawable as the background of the status bar

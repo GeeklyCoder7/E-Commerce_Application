@@ -61,9 +61,6 @@ public class SignUpActivity extends AppCompatActivity {
                     if (!binding.confirmPasswordSignUpEditText.getText().toString().equals(binding.passwordSignUpEditText.getText().toString())) {
                         binding.confirmPasswordSignUpEditText.setError("Passwords do not match.");
                     }
-//                    if (binding.passwordSignUpEditText.getText().toString().length() < 6) {
-//                        binding.passwordSignUpEditText.setError("Password must be at least 6 characters.");
-//                    }
                 } else {
                     firstAndLastName = binding.firstAndLastNameSignUpEditText.getText().toString();
                     emailAddress = binding.emailSignUpEditText.getText().toString();
