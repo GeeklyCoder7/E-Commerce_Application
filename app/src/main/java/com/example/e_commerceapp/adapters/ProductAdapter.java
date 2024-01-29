@@ -1,7 +1,6 @@
 package com.example.e_commerceapp.adapters;
 
 import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.e_commerceapp.R;
-import com.example.e_commerceapp.activities.ProductDetailsShowingActivity;
+import com.example.e_commerceapp.activities.HomeActivity;
 import com.example.e_commerceapp.databinding.DetailsActivityRandomProductsSuggestionsSampleLayoutBinding;
 import com.example.e_commerceapp.databinding.ProductCardSampleLayoutBinding;
 import com.example.e_commerceapp.models.CartModel;
@@ -22,11 +21,8 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
@@ -88,9 +84,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductA
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent productObjectSendingIntent = new Intent(context, ProductDetailsShowingActivity.class);
-                    productObjectSendingIntent.putExtra("productModel", productModel);
-                    context.startActivity(productObjectSendingIntent);
+                    ((HomeActivity) context).openProductDetailsFragment(productModel);
                 }
             });
         } else {
@@ -100,10 +94,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductA
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent productObjectSendingIntent = new Intent(context, ProductDetailsShowingActivity.class);
-                    productObjectSendingIntent.putExtra("productModel", productModel);
-                    context.startActivity(productObjectSendingIntent);
-                    ((ProductDetailsShowingActivity) context).finish();
+                    ((HomeActivity) context).openProductDetailsFragment(productModel);
                 }
             });
         }

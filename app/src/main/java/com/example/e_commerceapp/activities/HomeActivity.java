@@ -3,6 +3,9 @@ package com.example.e_commerceapp.activities;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.annotation.SuppressLint;
@@ -21,6 +24,11 @@ import com.example.e_commerceapp.R;
 import com.example.e_commerceapp.adapters.CategoryAdapter;
 import com.example.e_commerceapp.adapters.ProductAdapter;
 import com.example.e_commerceapp.databinding.ActivityHomeBinding;
+import com.example.e_commerceapp.fragments.CartFragment;
+import com.example.e_commerceapp.fragments.HomeFragment;
+import com.example.e_commerceapp.fragments.OrdersFragment;
+import com.example.e_commerceapp.fragments.ProductDetailFragment;
+import com.example.e_commerceapp.fragments.ProfileFragment;
 import com.example.e_commerceapp.models.CategoryModel;
 import com.example.e_commerceapp.utils.ConstantValues;
 import com.example.e_commerceapp.models.ProductModel;
@@ -50,129 +58,45 @@ public class HomeActivity extends AppCompatActivity {
         binding = ActivityHomeBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        //Initializing variables
-        categoryModelArrayList = new ArrayList<>();
-        database = FirebaseDatabase.getInstance();
-        databaseReference = database.getReference();
-        carouselItemArrayList = new ArrayList<>();
-        productModelArrayList = new ArrayList<>();
-
-        //Calling necessary functions here
-        setStatusBarColor();
-        fetchCategories();
-        populateCarousel();
-        fetchRandomProducts();
-
-        binding.searchIcon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(HomeActivity.this, SignUpActivity.class));
-            }
-        });
-
-        binding.offersAndNewsCarousel.registerLifecycle(getLifecycle());
-
         binding.bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 item.setChecked(true);
-                if (item.getItemId() == R.id.userMenuItem) {
-                    Toast.makeText(HomeActivity.this, "Users", Toast.LENGTH_SHORT).show();
-                    item.setChecked(true);
+                if (item.getItemId() == R.id.homeMenuItem) {
+                    loadFragment(new HomeFragment(), true);
+                } else if (item.getItemId() == R.id.userMenuItem) {
+                    loadFragment(new ProfileFragment(), false);
                 } else if (item.getItemId() == R.id.cartMenuItem) {
-                    Toast.makeText(HomeActivity.this, "Cart", Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(HomeActivity.this, CartActivity.class));
-                    item.setChecked(true);
+                    loadFragment(new CartFragment(), false);
                 } else if (item.getItemId() == R.id.ordersMenuItem) {
-                    Toast.makeText(HomeActivity.this, "Orders", Toast.LENGTH_SHORT).show();
-                    item.setChecked(true);
+                    loadFragment(new OrdersFragment(), false);
                 }
                 return false;
             }
         });
+
+        binding.bottomNavigationView.setSelectedItemId(R.id.homeMenuItem);
     }
 
-    //Function for setting the gradient drawable as the background of the status bar
-    private void setStatusBarColor() {
-        // Checking if the Android version is Lollipop or higher
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Window window = getWindow();
-            window.setFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS, WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+    void loadFragment(Fragment fragment, boolean flag) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
-            Drawable statusBarGradientBackgroundDrawable = ContextCompat.getDrawable(HomeActivity.this, R.drawable.search_section_background);
-            window.setStatusBarColor(getResources().getColor(android.R.color.transparent));
-            window.setBackgroundDrawable(statusBarGradientBackgroundDrawable);
+        if (flag) {
+            fragmentTransaction.add(R.id.mainFrameLayout, fragment);
+        } else {
+            fragmentTransaction.replace(R.id.mainFrameLayout, fragment);
         }
+        fragmentTransaction.commit();
     }
 
-    //Function for fetching the categories from the database
-    void fetchCategories() {
-        DatabaseReference categoriesNodeRef = databaseReference.child("categories");
-        categoriesNodeRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                categoryModelArrayList.clear();
-                for (DataSnapshot categoriesSnapshot : snapshot.getChildren()) {
-                    CategoryModel categoryModel = categoriesSnapshot.getValue(CategoryModel.class);
-                    if (categoryModel != null) {
-                        categoryModelArrayList.add(categoryModel);
-                    }
-                }
-                setUpCategoriesRecyclerView();
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.d("Failed to fetch categories : ", error.toString());
-            }
-        });
-    }
 
-    //Function for setting up the categories recycler view
-    void setUpCategoriesRecyclerView() {
-        CategoryAdapter categoryAdapter = new CategoryAdapter(HomeActivity.this, categoryModelArrayList);
-        binding.categoriesRecyclerView.setLayoutManager(new LinearLayoutManager(HomeActivity.this, LinearLayoutManager.HORIZONTAL, false));
-        binding.categoriesRecyclerView.setAdapter(categoryAdapter);
-    }
-
-    //function to populate or initialize the Carousel
-    void populateCarousel() {
-        carouselItemArrayList.add(new CarouselItem(R.drawable.placeholder, "Placeholder for testing"));
-        carouselItemArrayList.add(new CarouselItem(R.drawable.placeholder, "Placeholder for testing"));
-        carouselItemArrayList.add(new CarouselItem(R.drawable.placeholder, "Placeholder for testing"));
-        carouselItemArrayList.add(new CarouselItem(R.drawable.placeholder, "Placeholder for testing"));
-        carouselItemArrayList.add(new CarouselItem(R.drawable.placeholder, "Placeholder for testing"));
-        binding.offersAndNewsCarousel.setData(carouselItemArrayList);
-    }
-
-    //Function for setting up the recycler view for the random products
-    void setUpRandomProductsRecyclerView() {
-        ProductAdapter productAdapter = new ProductAdapter(HomeActivity.this, productModelArrayList, ConstantValues.FLAG_ADAPTER_CALLED_THROUGH_HOME_ACTIVITY);
-        binding.randomProductsRecyclerView.setLayoutManager(new LinearLayoutManager(HomeActivity.this));
-        binding.randomProductsRecyclerView.setAdapter(productAdapter);
-    }
-
-    //Function for fetching random products from the database
-    void fetchRandomProducts() {
-        DatabaseReference productsNodeRef = databaseReference.child("products");
-        productsNodeRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                productModelArrayList.clear();
-                for (DataSnapshot specificProductSnapshot : snapshot.getChildren()) {
-                    ProductModel product = specificProductSnapshot.getValue(ProductModel.class);
-                    if (product != null) {
-                        productModelArrayList.add(product);
-                    }
-                }
-                Collections.shuffle(productModelArrayList);
-                setUpRandomProductsRecyclerView();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
+    public void openProductDetailsFragment(ProductModel productModel) {
+        ProductDetailFragment productDetailFragment = new ProductDetailFragment();
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("productModel", productModel);
+        productDetailFragment.setArguments(bundle);
+        loadFragment(productDetailFragment, false);
     }
 }

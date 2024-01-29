@@ -4,17 +4,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
-    tools:context=".activities.ProductDetailsShowingActivity">
+    tools:context=".fragments.ProductDetailFragment">
 
     <androidx.core.widget.NestedScrollView
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:background="@color/white"
+        android:id="@+id/nestedScrollView"
         app:layout_constraintBottom_toTopOf="@+id/productDetailsAddToCartButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/white">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -23,12 +23,12 @@
 
             <ImageView
                 android:id="@+id/productDetailsImageView"
+                app:srcCompat="@drawable/placeholder"
                 android:layout_width="match_parent"
                 android:layout_height="230dp"
                 android:layout_marginTop="5dp"
                 android:background="@color/white"
-                android:scaleType="fitCenter"
-                app:srcCompat="@drawable/placeholder" />
+                android:scaleType="fitCenter" />
 
             <TextView
                 android:id="@+id/productDetailsProductNameTextView"
@@ -78,7 +78,6 @@
         android:id="@+id/productDetailsAddToCartButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="-5dp"
         android:backgroundTint="@color/add_to_cart_button_background_color"
         android:text="Add to Cart"
         android:textColor="@color/black"
@@ -88,4 +87,5 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
