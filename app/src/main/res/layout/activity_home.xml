@@ -7,6 +7,7 @@
     android:background="@color/white"
     tools:context=".activities.HomeActivity">
 
+
     <LinearLayout
         android:id="@+id/searchSectionLinearLayout"
         android:layout_width="match_parent"
@@ -17,6 +18,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
+
 
         <EditText
             android:id="@+id/editTextText"
@@ -32,6 +34,7 @@
             android:textColorHint="@color/text_hint_color"
             android:textSize="16sp" />
 
+
         <ImageView
             android:id="@+id/searchIcon"
             android:layout_width="100dp"
@@ -39,6 +42,7 @@
             android:layout_weight="1"
             app:srcCompat="@drawable/baseline_search_24" />
     </LinearLayout>
+
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="0dp"
@@ -50,11 +54,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/searchSectionLinearLayout">
 
+
         <LinearLayout
             android:id="@+id/scrollViewLinearLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
+
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -64,11 +70,13 @@
                 android:orientation="horizontal"
                 android:padding="8dp">
 
+
                 <ImageView
                     android:id="@+id/imageView3"
                     android:layout_width="33dp"
                     android:layout_height="33dp"
                     android:src="@drawable/baseline_place_24" />
+
 
                 <TextView
                     android:id="@+id/deliverToUserLocationSectionTextView"
@@ -81,6 +89,7 @@
                     android:textColor="@color/black"
                     android:textSize="14sp" />
 
+
                 <TextView
                     android:id="@+id/cityLocationSectionTextView"
                     android:layout_width="match_parent"
@@ -90,6 +99,7 @@
                     android:textAlignment="viewEnd"
                     android:textColor="@color/black"
                     android:textSize="14sp" />
+
 
                 <TextView
                     android:id="@+id/pincodeLocationSectionTextView"
@@ -101,7 +111,9 @@
                     android:textColor="@color/black"
                     android:textSize="14sp" />
 
+
             </LinearLayout>
+
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/categoriesRecyclerView"
@@ -110,6 +122,7 @@
                 android:background="@drawable/category_recyclerview_gradient_background_drawable"
                 android:orientation="horizontal"
                 android:padding="10dp"></androidx.recyclerview.widget.RecyclerView>
+
 
             <org.imaginativeworld.whynotimagecarousel.ImageCarousel
                 android:id="@+id/offersAndNewsCarousel"
@@ -124,15 +137,20 @@
                 app:showNavigationButtons="false"
                 app:showTopShadow="false">
 
+
             </org.imaginativeworld.whynotimagecarousel.ImageCarousel>
+
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/randomProductsRecyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 
+
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
+
+
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigationView"

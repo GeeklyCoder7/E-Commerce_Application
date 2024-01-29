@@ -75,11 +75,13 @@ public class HomeActivity extends AppCompatActivity {
         binding.bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                item.setChecked(true);
                 if (item.getItemId() == R.id.userMenuItem) {
                     Toast.makeText(HomeActivity.this, "Users", Toast.LENGTH_SHORT).show();
                     item.setChecked(true);
                 } else if (item.getItemId() == R.id.cartMenuItem) {
                     Toast.makeText(HomeActivity.this, "Cart", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(HomeActivity.this, CartActivity.class));
                     item.setChecked(true);
                 } else if (item.getItemId() == R.id.ordersMenuItem) {
                     Toast.makeText(HomeActivity.this, "Orders", Toast.LENGTH_SHORT).show();
