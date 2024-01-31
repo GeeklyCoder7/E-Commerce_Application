@@ -2,4 +2,6 @@
     <string name="app_name">E-Commerce App</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="order_eligible">Your order is eligible for FREE Delivery.</string>
+    <string name="order_not_eligible"> of eligible items to your cart to qualify for FREE Delivery.</string>
 </resources>

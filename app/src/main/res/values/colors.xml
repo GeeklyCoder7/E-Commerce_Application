@@ -23,5 +23,10 @@
     <color name="category_recyclerview_background_end_color">#A5D6A7</color>
     <color name="add_to_cart_button_background_color">#FFC400</color>
     <color name="menu_item_icon_selected_color">#00838F</color>
+    <color name="cart_item_quantity_text_color">#00838F</color>
     <color name="product_image_background_grey_color">#F5F5F5</color>
+    <color name="order_eligible_for_free_delivery_text_color">#00796B</color>
+    <color name="order_not_eligible_for_free_delivery_icon_color">#0097A7</color>
+    <color name="cart_item_card_background_color">#EAEAEA</color>
+    <color name="cart_item_quantity_inc_dec_button_background_color">#B3B3B3</color>
 </resources>

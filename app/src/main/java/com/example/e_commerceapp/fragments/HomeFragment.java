@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import com.example.e_commerceapp.R;
 import com.example.e_commerceapp.activities.HomeActivity;
@@ -150,8 +151,8 @@ public class HomeFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 productModelArrayList.clear();
-                for (DataSnapshot specificProductSnapshot : snapshot.getChildren()) {
-                    ProductModel product = specificProductSnapshot.getValue(ProductModel.class);
+                for (DataSnapshot particularProductSnapshot : snapshot.getChildren()) {
+                    ProductModel product = particularProductSnapshot.getValue(ProductModel.class);
                     if (product != null) {
                         productModelArrayList.add(product);
                     }
@@ -162,7 +163,7 @@ public class HomeFragment extends Fragment {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                Toast.makeText(requireContext(), "Failed to fetch products!", Toast.LENGTH_SHORT).show();
             }
         });
     }

@@ -8,6 +8,11 @@ public class CartModel extends ProductModel {
         this.cartProductQuantity = cartProductQuantity;
     }
 
+    //No argument constructor in order for firebase to work properly
+    public CartModel() {
+
+    }
+
     public int getCartProductQuantity() {
         return cartProductQuantity;
     }
