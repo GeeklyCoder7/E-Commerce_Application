@@ -156,7 +156,6 @@ public class CartFragment extends Fragment {
             binding.freeDeliveryEligibilityTextView.setTextColor(getResources().getColor(R.color.black));
         }
     }
-
     boolean eligibleForFreeDelivery() {
         return totalCartAmount >= 499;
     }
