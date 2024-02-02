@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
@@ -85,30 +86,43 @@ public class CartFragment extends Fragment {
     void fetchCartItems() {
         DatabaseReference cartItemsNodeRef = databaseReference.child("users").child(currentUser.getUid()).child("cart_items");
         cartItemsNodeRef.addValueEventListener(new ValueEventListener() {
+            @SuppressLint("NotifyDataSetChanged")
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                cartModelArrayList.clear();
-                for (DataSnapshot particularCartItemSnapshot : snapshot.getChildren()) {
-                    try {
-                        CartModel cartItem = particularCartItemSnapshot.getValue(CartModel.class);
-                        if (cartItem != null) {
-                            cartModelArrayList.add(cartItem);
-                            numberOfCartItems = numberOfCartItems + 1;
+                if (isAdded()) {  // Check if fragment is still attached
+                    cartModelArrayList.clear();
+                    totalCartAmount = 0;
+                    for (DataSnapshot particularCartItemSnapshot : snapshot.getChildren()) {
+                        try {
+                            CartModel cartItem = particularCartItemSnapshot.getValue(CartModel.class);
+                            if (cartItem != null) {
+                                cartModelArrayList.add(cartItem);
+                                numberOfCartItems = numberOfCartItems + 1;
+                            }
+                        } catch (Exception e) {
+                            Log.e("CartDetailsHai", "Error parsing cart item", e);
                         }
-                    } catch (Exception e) {
-                        Log.e("CartDetailsHai", "Error parsing cart item", e);
+                    }
+
+                    if (isAdded()) {  // Check if fragment is still attached
+                        setUpCartItemsRecyclerView();
+                        setTotalCartAmount();
+                        if (binding.cartItemsRecyclerView.getAdapter() != null) {
+                            binding.cartItemsRecyclerView.getAdapter().notifyDataSetChanged();
+                        }
                     }
                 }
-                setUpCartItemsRecyclerView();
-                setTotalCartAmount();
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(requireContext(), "Failed to load cart!", Toast.LENGTH_SHORT).show();
+                if (isAdded()) {  // Check if fragment is still attached
+                    Toast.makeText(requireContext(), "Failed to load cart!", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
+
 
     @SuppressLint("SetTextI18n")
     void setTotalCartAmount() {
@@ -156,6 +170,7 @@ public class CartFragment extends Fragment {
             binding.freeDeliveryEligibilityTextView.setTextColor(getResources().getColor(R.color.black));
         }
     }
+
     boolean eligibleForFreeDelivery() {
         return totalCartAmount >= 499;
     }
