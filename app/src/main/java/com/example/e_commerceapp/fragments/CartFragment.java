@@ -97,16 +97,17 @@ public class CartFragment extends Fragment {
                             CartModel cartItem = particularCartItemSnapshot.getValue(CartModel.class);
                             if (cartItem != null) {
                                 cartModelArrayList.add(cartItem);
-                                numberOfCartItems = numberOfCartItems + 1;
                             }
                         } catch (Exception e) {
                             Log.e("CartDetailsHai", "Error parsing cart item", e);
                         }
                     }
 
+                    numberOfCartItems = cartModelArrayList.size();
+
                     if (isAdded()) {  // Check if fragment is still attached
-                        setUpCartItemsRecyclerView();
                         setTotalCartAmount();
+                        setUpCartItemsRecyclerView();
                         if (binding.cartItemsRecyclerView.getAdapter() != null) {
                             binding.cartItemsRecyclerView.getAdapter().notifyDataSetChanged();
                         }
@@ -136,6 +137,7 @@ public class CartFragment extends Fragment {
         }
 
         binding.cartTotalTextView.setText("" + totalCartAmount);
+
         if (numberOfCartItems <= 0) {
             binding.proceedToBuyButton.setText("Add items to cart");
             binding.proceedToBuyButton.setOnClickListener(new View.OnClickListener() {
@@ -145,10 +147,10 @@ public class CartFragment extends Fragment {
                 }
             });
         } else {
-            if (numberOfCartItems > 1) {
-                binding.proceedToBuyButton.setText("Proceed to buy (" + numberOfCartItems + ") items");
-            } else {
+            if (numberOfCartItems == 1) {
                 binding.proceedToBuyButton.setText("Proceed to buy (" + numberOfCartItems + ") item");
+            } else {
+                binding.proceedToBuyButton.setText("Proceed to buy (" + numberOfCartItems + ") items");
             }
         }
 
