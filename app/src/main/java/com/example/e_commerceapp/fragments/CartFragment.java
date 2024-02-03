@@ -131,8 +131,12 @@ public class CartFragment extends Fragment {
 
         for (int i = 0; i < cartModelArrayList.size(); i++) {
             CartModel cartModel = cartModelArrayList.get(i);
+            
             if (cartModel.getProductPrice() != null) {
-                totalCartAmount += cartModel.getProductPrice();
+                int currentProductQuantity = cartModel.getCartProductQuantity();
+                float currentProductPrice = cartModel.getProductPrice();
+                sum = currentProductPrice * currentProductQuantity;
+                totalCartAmount += sum;
             }
         }
 

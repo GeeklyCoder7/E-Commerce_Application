@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/detailsActivityProductsSuggestionsCardView"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@color/white"
-        android:backgroundTint="@color/white"
+        android:backgroundTint="#F8F8F8"
         android:padding="5dp"
         app:cardCornerRadius="6dp"
         app:cardElevation="4dp"
@@ -23,24 +23,25 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="#F8F8F8"
             android:orientation="horizontal"
             android:padding="8dp">
 
             <ImageView
                 android:id="@+id/detailsActivityProductImageView"
-                android:layout_width="150dp"
-                android:layout_height="150dp"
+                android:layout_width="200dp"
+                android:layout_height="200dp"
                 android:layout_weight="1"
-                android:background="@color/white"
+                android:background="#F8F8F8"
                 android:scaleType="fitCenter"
                 app:srcCompat="@drawable/placeholder" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="3dp"
+                android:layout_marginLeft="6dp"
                 android:layout_weight="1"
-                android:background="@color/white"
+                android:background="#F8F8F8"
                 android:orientation="vertical">
 
                 <TextView
@@ -49,6 +50,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:ellipsize="end"
+                    android:gravity="center_vertical"
                     android:maxLines="2"
                     android:text="TextView"
                     android:textColor="@color/text_color"
@@ -60,6 +62,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:ellipsize="end"
+                    android:gravity="center_vertical"
                     android:maxLines="3"
                     android:text="TextView"
                     android:textColor="@color/black" />
