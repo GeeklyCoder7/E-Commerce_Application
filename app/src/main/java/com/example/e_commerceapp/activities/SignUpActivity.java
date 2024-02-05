@@ -42,7 +42,7 @@ public class SignUpActivity extends AppCompatActivity {
         database = FirebaseDatabase.getInstance();
         databaseReference = database.getReference();
 
-        binding.signUpButton.setOnClickListener(new View.OnClickListener() {
+        binding.addAddressButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (binding.firstAndLastNameSignUpEditText.getText().toString().equals("") || binding.emailSignUpEditText.getText().toString().equals("") || binding.passwordSignUpEditText.getText().toString().equals("") || binding.confirmPasswordSignUpEditText.getText().toString().equals("") || !binding.confirmPasswordSignUpEditText.getText().toString().equals(binding.passwordSignUpEditText.getText().toString())) {
@@ -66,26 +66,14 @@ public class SignUpActivity extends AppCompatActivity {
                     emailAddress = binding.emailSignUpEditText.getText().toString();
                     password = binding.passwordSignUpEditText.getText().toString();
 
-                    binding.signUpActivityLinearLayout.setVisibility(View.GONE);
-                    binding.signUpActivityProgressBar.setVisibility(View.VISIBLE);
-                    auth.createUserWithEmailAndPassword(emailAddress, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            if (task.isSuccessful()) {
-                                FirebaseUser user = auth.getCurrentUser();
-                                assert user != null;
-                                userId = user.getUid();
-                                userModel = new UserModel(firstAndLastName, emailAddress, password, userId);
+                    Intent goToAddressActivityIntent = new Intent(SignUpActivity.this, AddressActivity.class);
+                    goToAddressActivityIntent.putExtra("firstAndLastName", firstAndLastName);
+                    goToAddressActivityIntent.putExtra("emailAddress", emailAddress);
+                    goToAddressActivityIntent.putExtra("password", password);
 
-                                //Adding the newly created user and it's details to the database
-                                addUserToDatabase(userModel);
-                            } else {
-                                Toast.makeText(SignUpActivity.this, "Failed to create user", Toast.LENGTH_SHORT).show();
-                                binding.signUpActivityLinearLayout.setVisibility(View.VISIBLE);
-                                binding.signUpActivityProgressBar.setVisibility(View.GONE);
-                            }
-                        }
-                    });
+                    startActivity(goToAddressActivityIntent);
+                    finish();
+
                 }
             }
         });
@@ -95,34 +83,6 @@ public class SignUpActivity extends AppCompatActivity {
             public void onClick(View v) {
                 startActivity(new Intent(SignUpActivity.this, SignInActivity.class));
                 finish();
-            }
-        });
-    }
-
-    void resetEveryThing() {
-        binding.firstAndLastNameSignUpEditText.setText("");
-        binding.emailSignUpEditText.setText("");
-        binding.passwordSignUpEditText.setText("");
-        binding.confirmPasswordSignUpEditText.setText("");
-    }
-
-    void addUserToDatabase(UserModel userModel) {
-        DatabaseReference usersNodeRef = databaseReference.child("users");
-        DatabaseReference specificUserRef = usersNodeRef.child(userModel.getUserId());
-        specificUserRef.setValue(userModel).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void unused) {
-                Toast.makeText(SignUpActivity.this, "Account created successfully.", Toast.LENGTH_SHORT).show();
-                resetEveryThing();
-                binding.signUpActivityLinearLayout.setVisibility(View.VISIBLE);
-                binding.signUpActivityProgressBar.setVisibility(View.GONE);
-                startActivity(new Intent(SignUpActivity.this, SignInActivity.class));
-                finish();
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(SignUpActivity.this, "Failed to create an account.", Toast.LENGTH_SHORT).show();
             }
         });
     }

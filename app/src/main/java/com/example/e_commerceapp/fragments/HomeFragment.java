@@ -26,7 +26,11 @@ import com.example.e_commerceapp.adapters.ProductAdapter;
 import com.example.e_commerceapp.databinding.FragmentHomeBinding;
 import com.example.e_commerceapp.models.CategoryModel;
 import com.example.e_commerceapp.models.ProductModel;
+import com.example.e_commerceapp.models.UserModel;
 import com.example.e_commerceapp.utils.ConstantValues;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -43,6 +47,8 @@ public class HomeFragment extends Fragment {
     ArrayList<CategoryModel> categoryModelArrayList;
     private FirebaseDatabase database;
     private DatabaseReference databaseReference;
+    private FirebaseAuth auth;
+    private FirebaseUser currentUser;
     ArrayList<CarouselItem> carouselItemArrayList;
     ArrayList<ProductModel> productModelArrayList;
     public HomeFragment() {
@@ -57,11 +63,16 @@ public class HomeFragment extends Fragment {
         categoryModelArrayList = new ArrayList<>();
         database = FirebaseDatabase.getInstance();
         databaseReference = database.getReference();
+        auth = FirebaseAuth.getInstance();
+        if (auth.getCurrentUser() != null) {
+            currentUser = auth.getCurrentUser();
+        }
         carouselItemArrayList = new ArrayList<>();
         productModelArrayList = new ArrayList<>();
 
         //Calling necessary functions here
         setStatusBarColor();
+        setUserLocation();
         fetchCategories();
         populateCarousel();
         fetchRandomProducts();
@@ -164,6 +175,26 @@ public class HomeFragment extends Fragment {
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 Toast.makeText(requireContext(), "Failed to fetch products!", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    void setUserLocation() {
+        DatabaseReference currentUserReference = databaseReference.child("users").child(currentUser.getUid());
+        currentUserReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                UserModel userModel = snapshot.getValue(UserModel.class);
+                if (userModel != null) {
+                    binding.userFirstAndLastNameTextView.setText(userModel.getFirstAndLastName());
+                    binding.userCityTextView.setText(userModel.getCityName());
+                    binding.userPincodeTextView.setText(userModel.getPinCode());
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(requireContext(), "Failed to fetch user location details!", Toast.LENGTH_SHORT).show();
             }
         });
     }
