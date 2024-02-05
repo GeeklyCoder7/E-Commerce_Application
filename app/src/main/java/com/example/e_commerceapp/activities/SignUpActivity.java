@@ -26,7 +26,7 @@ import com.google.firebase.database.FirebaseDatabase;
 public class SignUpActivity extends AppCompatActivity {
     ActivitySignUpBinding binding;
     private FirebaseAuth auth;
-    String firstAndLastName = "", emailAddress = "", password = "", userId = "";
+    String emailAddress = "", password = "", userId = "";
     UserModel userModel;
     private FirebaseDatabase database;
     private DatabaseReference databaseReference;
@@ -45,10 +45,7 @@ public class SignUpActivity extends AppCompatActivity {
         binding.signUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (binding.firstAndLastNameSignUpEditText.getText().toString().equals("") || binding.emailSignUpEditText.getText().toString().equals("") || binding.passwordSignUpEditText.getText().toString().equals("") || binding.confirmPasswordSignUpEditText.getText().toString().equals("") || !binding.confirmPasswordSignUpEditText.getText().toString().equals(binding.passwordSignUpEditText.getText().toString())) {
-                    if (binding.firstAndLastNameSignUpEditText.getText().toString().equals("")) {
-                        binding.firstAndLastNameSignUpEditText.setError("Please enter First and Last name.");
-                    }
+                if (binding.emailSignUpEditText.getText().toString().equals("") || binding.passwordSignUpEditText.getText().toString().equals("") || binding.confirmPasswordSignUpEditText.getText().toString().equals("") || !binding.confirmPasswordSignUpEditText.getText().toString().equals(binding.passwordSignUpEditText.getText().toString())) {
                     if (binding.emailSignUpEditText.getText().toString().equals("")) {
                         binding.emailSignUpEditText.setError("Please enter the email address.");
                     }
@@ -62,7 +59,6 @@ public class SignUpActivity extends AppCompatActivity {
                         binding.confirmPasswordSignUpEditText.setError("Passwords do not match.");
                     }
                 } else {
-                    firstAndLastName = binding.firstAndLastNameSignUpEditText.getText().toString();
                     emailAddress = binding.emailSignUpEditText.getText().toString();
                     password = binding.passwordSignUpEditText.getText().toString();
 
@@ -75,7 +71,7 @@ public class SignUpActivity extends AppCompatActivity {
                                 FirebaseUser user = auth.getCurrentUser();
                                 assert user != null;
                                 userId = user.getUid();
-                                userModel = new UserModel(firstAndLastName, emailAddress, password, userId);
+                                userModel = new UserModel(emailAddress, password, userId);
 
                                 //Adding the newly created user and it's details to the database
                                 addUserToDatabase(userModel);
@@ -100,7 +96,6 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
     void resetEveryThing() {
-        binding.firstAndLastNameSignUpEditText.setText("");
         binding.emailSignUpEditText.setText("");
         binding.passwordSignUpEditText.setText("");
         binding.confirmPasswordSignUpEditText.setText("");
@@ -116,7 +111,7 @@ public class SignUpActivity extends AppCompatActivity {
                 resetEveryThing();
                 binding.signUpActivityLinearLayout.setVisibility(View.VISIBLE);
                 binding.signUpActivityProgressBar.setVisibility(View.GONE);
-                startActivity(new Intent(SignUpActivity.this, SignInActivity.class));
+                startActivity(new Intent(SignUpActivity.this, AddressActivity.class));
                 finish();
             }
         }).addOnFailureListener(new OnFailureListener() {

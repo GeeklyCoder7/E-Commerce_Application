@@ -19,14 +19,19 @@ import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.example.e_commerceapp.R;
+import com.example.e_commerceapp.activities.AddressActivity;
 import com.example.e_commerceapp.activities.HomeActivity;
 import com.example.e_commerceapp.activities.SignUpActivity;
 import com.example.e_commerceapp.adapters.CategoryAdapter;
 import com.example.e_commerceapp.adapters.ProductAdapter;
 import com.example.e_commerceapp.databinding.FragmentHomeBinding;
+import com.example.e_commerceapp.models.AddressModel;
 import com.example.e_commerceapp.models.CategoryModel;
 import com.example.e_commerceapp.models.ProductModel;
+import com.example.e_commerceapp.models.UserModel;
 import com.example.e_commerceapp.utils.ConstantValues;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -37,12 +42,15 @@ import org.imaginativeworld.whynotimagecarousel.model.CarouselItem;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Objects;
 
 public class HomeFragment extends Fragment {
     FragmentHomeBinding binding;
     ArrayList<CategoryModel> categoryModelArrayList;
     private FirebaseDatabase database;
     private DatabaseReference databaseReference;
+    FirebaseAuth auth;
+    FirebaseUser currentUser;
     ArrayList<CarouselItem> carouselItemArrayList;
     ArrayList<ProductModel> productModelArrayList;
     public HomeFragment() {
@@ -57,11 +65,16 @@ public class HomeFragment extends Fragment {
         categoryModelArrayList = new ArrayList<>();
         database = FirebaseDatabase.getInstance();
         databaseReference = database.getReference();
+        auth = FirebaseAuth.getInstance();
+        if (auth.getCurrentUser() != null) {
+            currentUser = auth.getCurrentUser();
+        }
         carouselItemArrayList = new ArrayList<>();
         productModelArrayList = new ArrayList<>();
 
         //Calling necessary functions here
         setStatusBarColor();
+        setCurrentUserLocation();
         fetchCategories();
         populateCarousel();
         fetchRandomProducts();
@@ -164,6 +177,34 @@ public class HomeFragment extends Fragment {
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 Toast.makeText(requireContext(), "Failed to fetch products!", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    //Method for setting the current users
+    void setCurrentUserLocation() {
+        DatabaseReference currentUserAddressesNodeRef = databaseReference.child("users").child(currentUser.getUid()).child("user_addresses");
+
+        currentUserAddressesNodeRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                AddressModel addressModel;
+                for (DataSnapshot addressSnapshot : snapshot.getChildren()) {
+                    if (addressSnapshot != null && Objects.requireNonNull(addressSnapshot.getValue(AddressModel.class)).getAddressStatus().equals(ConstantValues.ADDRESS_STATUS_SELECTED)) {
+                        addressModel = addressSnapshot.getValue(AddressModel.class);
+                        if (addressModel != null) {
+                            binding.selectedAddressUserNameTextView.setText("" + addressModel.getFirstAndLastName());
+                            binding.selectedAddressCityNameTextView.setText("" + addressModel.getCityName());
+                            binding.selectedAddressPincodeTextView.setText("" + addressModel.getPinCode());
+                        }
+                        break;
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e("City and PinCode setting error : ", error.getMessage());
             }
         });
     }

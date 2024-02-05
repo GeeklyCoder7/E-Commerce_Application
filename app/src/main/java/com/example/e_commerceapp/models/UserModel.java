@@ -1,22 +1,15 @@
 package com.example.e_commerceapp.models;
 
 public class UserModel {
-    String firstAndLastName, emailAddress, password, userId;
+    String emailAddress, password, userId;
 
-    public UserModel(String firstAndLastName, String emailAddress, String password, String userId) {
-        this.firstAndLastName = firstAndLastName;
+    public UserModel(String emailAddress, String password, String userId) {
         this.emailAddress = emailAddress;
         this.password = password;
         this.userId = userId;
     }
 
-    public String getFirstAndLastName() {
-        return firstAndLastName;
-    }
-
-    public void setFirstAndLastName(String firstAndLastName) {
-        this.firstAndLastName = firstAndLastName;
-    }
+    public UserModel() {}
 
     public String getEmailAddress() {
         return emailAddress;
