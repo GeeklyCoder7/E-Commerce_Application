@@ -33,7 +33,6 @@ import java.util.Collections;
 
 public class ProductDetailFragment extends Fragment {
     FragmentProductDetailBinding binding;
-    Intent productObjectReceivingIntent;
     ProductModel receivedProductModelObj;
     String productName, productDescription, productCategory, productImage, productId;
     Float productPrice;

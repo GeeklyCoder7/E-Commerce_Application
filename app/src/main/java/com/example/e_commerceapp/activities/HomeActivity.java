@@ -13,6 +13,7 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -29,6 +30,7 @@ import com.example.e_commerceapp.fragments.HomeFragment;
 import com.example.e_commerceapp.fragments.OrdersFragment;
 import com.example.e_commerceapp.fragments.ProductDetailFragment;
 import com.example.e_commerceapp.fragments.ProfileFragment;
+import com.example.e_commerceapp.fragments.SearchResultsFragment;
 import com.example.e_commerceapp.models.CategoryModel;
 import com.example.e_commerceapp.utils.ConstantValues;
 import com.example.e_commerceapp.models.ProductModel;
@@ -98,5 +100,14 @@ public class HomeActivity extends AppCompatActivity {
         bundle.putParcelable("productModel", productModel);
         productDetailFragment.setArguments(bundle);
         loadFragment(productDetailFragment, false);
+    }
+
+    public void openSearchResultsFragment(ArrayList<ProductModel> searchResultsArraylist, String searchedText) {
+        SearchResultsFragment searchResultsFragment = new SearchResultsFragment();
+        Bundle bundle = new Bundle();
+        bundle.putParcelableArrayList("searchResultsArraylist", searchResultsArraylist);
+        bundle.putString("searchedText", searchedText);
+        searchResultsFragment.setArguments(bundle);
+        loadFragment(searchResultsFragment, false);
     }
 }

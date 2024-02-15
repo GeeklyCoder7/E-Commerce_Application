@@ -7,7 +7,7 @@
     tools:context=".fragments.HomeFragment">
 
     <LinearLayout
-        android:id="@+id/searchSectionLinearLayout"
+        android:id="@+id/homeFragmentSearchSectionLinearLayout"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:background="@drawable/search_section_background"
@@ -19,14 +19,14 @@
 
 
         <EditText
-            android:id="@+id/editTextText"
+            android:id="@+id/homeFragmentSearchView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="@drawable/search_bar_background_drawable"
             android:ems="10"
-            android:hint="Search"
-            android:inputType="text"
+            android:hint="Search products"
+            android:inputType="text|textCapWords"
             android:padding="8dp"
             android:textColor="@color/black"
             android:textColorHint="@color/text_hint_color"
@@ -34,7 +34,7 @@
 
 
         <ImageView
-            android:id="@+id/searchIcon"
+            android:id="@+id/homeFragmentSearchIcon"
             android:layout_width="100dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -50,7 +50,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/searchSectionLinearLayout">
+        app:layout_constraintTop_toBottomOf="@+id/homeFragmentSearchSectionLinearLayout">
 
 
         <LinearLayout
@@ -77,7 +77,7 @@
 
 
                 <TextView
-                    android:id="@+id/selectedAddressUserNameTextView"
+                    android:id="@+id/homeFragmentSelectedAddressUserNameTextView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="3dp"
@@ -89,7 +89,7 @@
 
 
                 <TextView
-                    android:id="@+id/selectedAddressCityNameTextView"
+                    android:id="@+id/homeFragmentSelectedAddressCityNameTextView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -100,7 +100,7 @@
 
 
                 <TextView
-                    android:id="@+id/selectedAddressPincodeTextView"
+                    android:id="@+id/homeFragmentSelectedAddressPincodeTextView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"

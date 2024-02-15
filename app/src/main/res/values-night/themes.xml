@@ -6,4 +6,7 @@
     </style>
 
     <style name="BottomNavigationView" parent="Theme.MaterialComponents.Light.DarkActionBar"/>
+    <style name="SearchViewStyle" parent="Widget.AppCompat.SearchView">
+        <item name="android:queryHint">#000000</item>
+    </style>
 </resources>

@@ -10,12 +10,15 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import com.example.e_commerceapp.R;
@@ -53,9 +56,12 @@ public class HomeFragment extends Fragment {
     FirebaseUser currentUser;
     ArrayList<CarouselItem> carouselItemArrayList;
     ArrayList<ProductModel> productModelArrayList;
+    ArrayList<ProductModel> searchResultArraylist;
+
     public HomeFragment() {
 
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -71,6 +77,7 @@ public class HomeFragment extends Fragment {
         }
         carouselItemArrayList = new ArrayList<>();
         productModelArrayList = new ArrayList<>();
+        searchResultArraylist = new ArrayList<>();
 
         //Calling necessary functions here
         setStatusBarColor();
@@ -79,14 +86,19 @@ public class HomeFragment extends Fragment {
         populateCarousel();
         fetchRandomProducts();
 
-        binding.searchIcon.setOnClickListener(new View.OnClickListener() {
+        binding.offersAndNewsCarousel.registerLifecycle(getLifecycle());
+
+        binding.homeFragmentSearchIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(requireContext(), SignUpActivity.class));
+                String searchedText = binding.homeFragmentSearchView.getText().toString();
+                if (searchedText.length() > 0) {
+                    searchProducts(searchedText);
+                } else {
+                    Toast.makeText(requireContext(), "Please enter something to search!", Toast.LENGTH_SHORT).show();
+                }
             }
         });
-
-        binding.offersAndNewsCarousel.registerLifecycle(getLifecycle());
 
         return binding.getRoot();
     }
@@ -193,9 +205,9 @@ public class HomeFragment extends Fragment {
                     if (addressSnapshot != null && Objects.requireNonNull(addressSnapshot.getValue(AddressModel.class)).getAddressStatus().equals(ConstantValues.ADDRESS_STATUS_SELECTED)) {
                         addressModel = addressSnapshot.getValue(AddressModel.class);
                         if (addressModel != null) {
-                            binding.selectedAddressUserNameTextView.setText("" + addressModel.getFirstAndLastName());
-                            binding.selectedAddressCityNameTextView.setText("" + addressModel.getCityName());
-                            binding.selectedAddressPincodeTextView.setText("" + addressModel.getPinCode());
+                            binding.homeFragmentSelectedAddressUserNameTextView.setText("" + addressModel.getFirstAndLastName());
+                            binding.homeFragmentSelectedAddressCityNameTextView.setText("" + addressModel.getCityName());
+                            binding.homeFragmentSelectedAddressPincodeTextView.setText("" + addressModel.getPinCode());
                         }
                         break;
                     }
@@ -205,6 +217,33 @@ public class HomeFragment extends Fragment {
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 Log.e("City and PinCode setting error : ", error.getMessage());
+            }
+        });
+    }
+
+    //Method for search a product from the database
+    public void searchProducts(String s) {
+        DatabaseReference productNodeRef = databaseReference.child("products");
+        productNodeRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                searchResultArraylist.clear();
+
+                for (DataSnapshot productSnapshot : snapshot.getChildren()) {
+                    ProductModel productModel = productSnapshot.getValue(ProductModel.class);
+                    if (productModel != null && productModel.getProductName().toLowerCase().contains(s.toLowerCase()) || Objects.requireNonNull(productModel).getProductDescription().toLowerCase().contains(s.toLowerCase())) {
+                        searchResultArraylist.add(productModel);
+                    }
+                }
+
+                //Sending the search results to the SearchResultsFragment
+                HomeActivity homeActivity = (HomeActivity) requireActivity();
+                homeActivity.openSearchResultsFragment(searchResultArraylist, s);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(requireContext(), "Failed to fetch products!", Toast.LENGTH_SHORT).show();
             }
         });
     }

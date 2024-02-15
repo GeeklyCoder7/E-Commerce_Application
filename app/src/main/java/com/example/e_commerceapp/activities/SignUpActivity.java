@@ -42,7 +42,7 @@ public class SignUpActivity extends AppCompatActivity {
         database = FirebaseDatabase.getInstance();
         databaseReference = database.getReference();
 
-        binding.signUpButton.setOnClickListener(new View.OnClickListener() {
+        binding.addAddressButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (binding.emailSignUpEditText.getText().toString().equals("") || binding.passwordSignUpEditText.getText().toString().equals("") || binding.confirmPasswordSignUpEditText.getText().toString().equals("") || !binding.confirmPasswordSignUpEditText.getText().toString().equals(binding.passwordSignUpEditText.getText().toString())) {
@@ -62,8 +62,8 @@ public class SignUpActivity extends AppCompatActivity {
                     emailAddress = binding.emailSignUpEditText.getText().toString();
                     password = binding.passwordSignUpEditText.getText().toString();
 
-                    binding.signUpActivityLinearLayout.setVisibility(View.GONE);
-                    binding.signUpActivityProgressBar.setVisibility(View.VISIBLE);
+//                    binding.signUpActivityLinearLayout.setVisibility(View.GONE);
+//                    binding.signUpActivityProgressBar.setVisibility(View.VISIBLE);
                     auth.createUserWithEmailAndPassword(emailAddress, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
@@ -77,8 +77,8 @@ public class SignUpActivity extends AppCompatActivity {
                                 addUserToDatabase(userModel);
                             } else {
                                 Toast.makeText(SignUpActivity.this, "Failed to create user", Toast.LENGTH_SHORT).show();
-                                binding.signUpActivityLinearLayout.setVisibility(View.VISIBLE);
-                                binding.signUpActivityProgressBar.setVisibility(View.GONE);
+//                                binding.signUpActivityLinearLayout.setVisibility(View.VISIBLE);
+//                                binding.signUpActivityProgressBar.setVisibility(View.GONE);
                             }
                         }
                     });
@@ -109,8 +109,8 @@ public class SignUpActivity extends AppCompatActivity {
             public void onSuccess(Void unused) {
                 Toast.makeText(SignUpActivity.this, "Account created successfully.", Toast.LENGTH_SHORT).show();
                 resetEveryThing();
-                binding.signUpActivityLinearLayout.setVisibility(View.VISIBLE);
-                binding.signUpActivityProgressBar.setVisibility(View.GONE);
+//                binding.signUpActivityLinearLayout.setVisibility(View.VISIBLE);
+//                binding.signUpActivityProgressBar.setVisibility(View.GONE);
                 startActivity(new Intent(SignUpActivity.this, AddressActivity.class));
                 finish();
             }
