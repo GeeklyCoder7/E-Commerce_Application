@@ -10,6 +10,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import android.provider.ContactsContract;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -147,7 +148,7 @@ public class HomeFragment extends Fragment {
 
     //Function for setting up the categories recycler view
     void setUpCategoriesRecyclerView() {
-        CategoryAdapter categoryAdapter = new CategoryAdapter(requireContext(), categoryModelArrayList);
+        CategoryAdapter categoryAdapter = new CategoryAdapter(requireContext(), categoryModelArrayList, this);
         binding.categoriesRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
         binding.categoriesRecyclerView.setAdapter(categoryAdapter);
     }
@@ -244,6 +245,30 @@ public class HomeFragment extends Fragment {
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 Toast.makeText(requireContext(), "Failed to fetch products!", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    public void searchByCategory(String categoryName) {
+        DatabaseReference productNodeRef = databaseReference.child("products");
+        productNodeRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                searchResultArraylist.clear();
+                for (DataSnapshot productSnapshot : snapshot.getChildren()) {
+                    ProductModel productModel = productSnapshot.getValue(ProductModel.class);
+                    if (productModel != null && productModel.getProductCategory().toLowerCase().toString().equals(categoryName.toLowerCase())) {
+                        searchResultArraylist.add(productModel);
+                    }
+                }
+
+                HomeActivity homeActivity = (HomeActivity) requireActivity();
+                homeActivity.openSearchResultsFragment(searchResultArraylist, categoryName);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(requireContext(), "Failed to fetch products by category!", Toast.LENGTH_SHORT).show();
             }
         });
     }

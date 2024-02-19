@@ -53,6 +53,7 @@ public class HomeActivity extends AppCompatActivity {
     private DatabaseReference databaseReference;
     ArrayList<CarouselItem> carouselItemArrayList;
     ArrayList<ProductModel> productModelArrayList;
+
     @SuppressLint("UseCompatLoadingForDrawables")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,8 +92,6 @@ public class HomeActivity extends AppCompatActivity {
         }
         fragmentTransaction.commit();
     }
-
-
 
     public void openProductDetailsFragment(ProductModel productModel) {
         ProductDetailFragment productDetailFragment = new ProductDetailFragment();

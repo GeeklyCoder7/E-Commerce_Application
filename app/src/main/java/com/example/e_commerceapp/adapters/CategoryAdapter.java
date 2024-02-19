@@ -10,7 +10,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.e_commerceapp.R;
+import com.example.e_commerceapp.activities.HomeActivity;
 import com.example.e_commerceapp.databinding.CategoryCircleSampleLayoutBinding;
+import com.example.e_commerceapp.fragments.HomeFragment;
 import com.example.e_commerceapp.models.CategoryModel;
 
 import java.util.ArrayList;
@@ -18,10 +20,12 @@ import java.util.ArrayList;
 public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.CategoryAdapterViewHolder> {
     Context context;
     ArrayList<CategoryModel> categoryModelArrayList;
+    HomeFragment homeFragment;
 
-    public CategoryAdapter(Context context, ArrayList<CategoryModel> categoryModelArrayList) {
+    public CategoryAdapter(Context context, ArrayList<CategoryModel> categoryModelArrayList, HomeFragment homeFragment) {
         this.context = context;
         this.categoryModelArrayList = categoryModelArrayList;
+        this.homeFragment = homeFragment;
     }
 
     @NonNull
@@ -35,6 +39,13 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
         CategoryModel categoryModel = categoryModelArrayList.get(position);
         holder.binding.categoryNameTextView.setText(categoryModel.getCategoryName());
         Glide.with(context).load(categoryModel.getCategoryIconImage()).into(holder.binding.categoryImageview);
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                homeFragment.searchByCategory(categoryModel.getCategoryName());
+            }
+        });
     }
 
     @Override
