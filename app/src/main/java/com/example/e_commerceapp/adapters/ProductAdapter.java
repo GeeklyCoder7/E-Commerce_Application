@@ -30,6 +30,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductA
     Context context;
     ArrayList<ProductModel> productModelArrayList;
     private int flag;
+    String testing = "";
     FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
     DatabaseReference databaseReference = firebaseDatabase.getReference();
     DatabaseReference cartReference;
