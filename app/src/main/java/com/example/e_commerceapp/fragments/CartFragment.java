@@ -99,7 +99,7 @@ public class CartFragment extends Fragment {
                                 cartModelArrayList.add(cartItem);
                             }
                         } catch (Exception e) {
-                            Log.e("CartDetailsHai", "Error parsing cart item", e);
+                            Log.e("These are cart detaisl : ", "Error parsing cart item", e);
                         }
                     }
 

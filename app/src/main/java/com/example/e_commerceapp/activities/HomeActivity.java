@@ -2,49 +2,33 @@ package com.example.e_commerceapp.activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.annotation.SuppressLint;
-import android.content.Intent;
-import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Parcelable;
-import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.Toast;
 
 import com.example.e_commerceapp.R;
-import com.example.e_commerceapp.adapters.CategoryAdapter;
-import com.example.e_commerceapp.adapters.ProductAdapter;
 import com.example.e_commerceapp.databinding.ActivityHomeBinding;
+import com.example.e_commerceapp.fragments.AddAddressFragment;
 import com.example.e_commerceapp.fragments.CartFragment;
 import com.example.e_commerceapp.fragments.HomeFragment;
 import com.example.e_commerceapp.fragments.OrdersFragment;
 import com.example.e_commerceapp.fragments.ProductDetailFragment;
 import com.example.e_commerceapp.fragments.ProfileFragment;
 import com.example.e_commerceapp.fragments.SearchResultsFragment;
+import com.example.e_commerceapp.fragments.UserAddressesFragment;
 import com.example.e_commerceapp.models.CategoryModel;
-import com.example.e_commerceapp.utils.ConstantValues;
 import com.example.e_commerceapp.models.ProductModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import org.imaginativeworld.whynotimagecarousel.model.CarouselItem;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
 public class HomeActivity extends AppCompatActivity {
     ActivityHomeBinding binding;
@@ -108,5 +92,15 @@ public class HomeActivity extends AppCompatActivity {
         bundle.putString("searchedText", searchedText);
         searchResultsFragment.setArguments(bundle);
         loadFragment(searchResultsFragment, false);
+    }
+
+    public void openUserAddressesFragment() {
+        UserAddressesFragment userAddressesFragment = new UserAddressesFragment();
+        loadFragment(userAddressesFragment, false);
+    }
+
+    public void openAddAddressesFragment() {
+        AddAddressFragment addAddressFragment = new AddAddressFragment();
+        loadFragment(addAddressFragment, false);
     }
 }

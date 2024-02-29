@@ -1,6 +1,5 @@
 package com.example.e_commerceapp.fragments;
 
-import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -10,29 +9,22 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import android.provider.ContactsContract;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.SearchView;
 import android.widget.Toast;
 
 import com.example.e_commerceapp.R;
-import com.example.e_commerceapp.activities.AddressActivity;
 import com.example.e_commerceapp.activities.HomeActivity;
-import com.example.e_commerceapp.activities.SignUpActivity;
 import com.example.e_commerceapp.adapters.CategoryAdapter;
 import com.example.e_commerceapp.adapters.ProductAdapter;
 import com.example.e_commerceapp.databinding.FragmentHomeBinding;
 import com.example.e_commerceapp.models.AddressModel;
 import com.example.e_commerceapp.models.CategoryModel;
 import com.example.e_commerceapp.models.ProductModel;
-import com.example.e_commerceapp.models.UserModel;
 import com.example.e_commerceapp.utils.ConstantValues;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -203,21 +195,23 @@ public class HomeFragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 AddressModel addressModel;
                 for (DataSnapshot addressSnapshot : snapshot.getChildren()) {
-                    if (addressSnapshot != null && Objects.requireNonNull(addressSnapshot.getValue(AddressModel.class)).getAddressStatus().equals(ConstantValues.ADDRESS_STATUS_SELECTED)) {
-                        addressModel = addressSnapshot.getValue(AddressModel.class);
-                        if (addressModel != null) {
-                            binding.homeFragmentSelectedAddressUserNameTextView.setText("" + addressModel.getFirstAndLastName());
-                            binding.homeFragmentSelectedAddressCityNameTextView.setText("" + addressModel.getCityName());
-                            binding.homeFragmentSelectedAddressPincodeTextView.setText("" + addressModel.getPinCode());
+                    if (isAdded()) {
+                        if (addressSnapshot != null && Objects.requireNonNull(addressSnapshot.getValue(AddressModel.class)).isDefault()) {
+                            addressModel = addressSnapshot.getValue(AddressModel.class);
+                            if (addressModel != null) {
+                                binding.homeFragmentSelectedAddressUserNameTextView.setText("" + addressModel.getFirstAndLastName());
+                                binding.homeFragmentSelectedAddressCityNameTextView.setText("" + addressModel.getCityName());
+                                binding.homeFragmentSelectedAddressPincodeTextView.setText("" + addressModel.getPinCode());
+                            }
+                            break;
                         }
-                        break;
                     }
                 }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Log.e("City and PinCode setting error : ", error.getMessage());
+                    Log.e("City and PinCode setting error : ", error.getMessage());
             }
         });
     }

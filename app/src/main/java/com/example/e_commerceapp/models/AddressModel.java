@@ -1,9 +1,19 @@
 package com.example.e_commerceapp.models;
 
 public class AddressModel {
-    String firstAndLastName, cityName, stateName, areaName, districtName, landmarkName, pinCode, mobileNumber, addressId, addressStatus;
+    String firstAndLastName;
+    String cityName;
+    String stateName;
+    String areaName;
+    String districtName;
+    String landmarkName;
+    String pinCode;
+    String mobileNumber;
+    String addressId;
+    String buildingNameAndHouseNo;
+    boolean isDefault;
 
-    public AddressModel(String firstAndLastName, String cityName, String stateName, String areaName, String districtName, String landmarkName, String pinCode, String mobileNumber, String addressId, String addressStatus) {
+    public AddressModel(String firstAndLastName, String cityName, String stateName, String areaName, String districtName, String landmarkName, String pinCode, String mobileNumber, String addressId, String buildingNameAndHouseNo, boolean isDefault) {
         this.firstAndLastName = firstAndLastName;
         this.cityName = cityName;
         this.stateName = stateName;
@@ -13,7 +23,8 @@ public class AddressModel {
         this.pinCode = pinCode;
         this.mobileNumber = mobileNumber;
         this.addressId = addressId;
-        this.addressStatus = addressStatus;
+        this.buildingNameAndHouseNo = buildingNameAndHouseNo;
+        this.isDefault = isDefault;
     }
 
     public AddressModel() {}
@@ -90,11 +101,19 @@ public class AddressModel {
         this.addressId = addressId;
     }
 
-    public String getAddressStatus() {
-        return addressStatus;
+    public String getBuildingNameAndHouseNo() {
+        return buildingNameAndHouseNo;
     }
 
-    public void setAddressStatus(String addressStatus) {
-        this.addressStatus = addressStatus;
+    public void setBuildingNameAndHouseNo(String buildingNameAndHouseNo) {
+        this.buildingNameAndHouseNo = buildingNameAndHouseNo;
+    }
+
+    public boolean isDefault() {
+        return isDefault;
+    }
+
+    public void setDefault(boolean aDefault) {
+        isDefault = aDefault;
     }
 }

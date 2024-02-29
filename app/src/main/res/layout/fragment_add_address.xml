@@ -4,35 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
-    tools:context=".activities.AddressActivity">
-
-    <TextView
-        android:id="@+id/textView11"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/grey_button_background"
-        android:padding="5dp"
-        android:text="E-Commerce App"
-        android:textAlignment="center"
-        android:textColor="@color/black"
-        android:textSize="34sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    tools:context=".fragments.AddAddressFragment">
 
     <androidx.core.widget.NestedScrollView
-        android:id="@+id/addAddressNestedScrollView"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView11">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
 
         <LinearLayout
-            android:id="@+id/signUpActivityLinearLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
@@ -49,6 +27,7 @@
                 android:textStyle="bold" />
 
             <TextView
+                android:id="@+id/textView7"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="25dp"
@@ -58,7 +37,7 @@
                 android:textStyle="bold" />
 
             <EditText
-                android:id="@+id/firstAndLastNameAddAddressEditText"
+                android:id="@+id/addAddressFragmentFirstAndLastNameEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
@@ -79,7 +58,7 @@
                 android:textStyle="bold" />
 
             <EditText
-                android:id="@+id/buildingNameAndHouseNoEditText"
+                android:id="@+id/addAddressFragmentBuildingNameAndHouseNoEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
@@ -101,7 +80,7 @@
                 android:textStyle="bold" />
 
             <EditText
-                android:id="@+id/cityNameAddAddressEditText"
+                android:id="@+id/addAddressFragmentCityNameEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
@@ -123,7 +102,7 @@
                 android:textStyle="bold" />
 
             <EditText
-                android:id="@+id/stateNameAddAddressEditText"
+                android:id="@+id/addAddressFragmentStateNameEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
@@ -145,7 +124,7 @@
                 android:textStyle="bold" />
 
             <EditText
-                android:id="@+id/areaNameAddAddressEditText"
+                android:id="@+id/addAddressFragmentAreaNameEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
@@ -167,7 +146,7 @@
                 android:textStyle="bold" />
 
             <EditText
-                android:id="@+id/districtNameAddAddressEditText"
+                android:id="@+id/addAddressFragmentDistrictNameEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
@@ -188,7 +167,7 @@
                 android:textStyle="bold" />
 
             <EditText
-                android:id="@+id/pincodeAddAddressEditText"
+                android:id="@+id/addAddressFragmentPinCodeEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
@@ -210,7 +189,7 @@
                 android:textStyle="bold" />
 
             <EditText
-                android:id="@+id/landmarkNameAddAddressEditText"
+                android:id="@+id/addAddressFragmentLandmarkEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
@@ -244,27 +223,16 @@
                 android:textSize="20sp" />
 
             <Button
-                android:id="@+id/signUpButton"
+                android:id="@+id/addAddressFragmentAddButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="80dp"
                 android:backgroundTint="@color/button_secondary_color"
-                android:text="Sign Up"
+                android:text="Add Address"
                 android:textColor="@color/black"
                 android:textSize="16sp"
                 app:cornerRadius="5dp" />
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
-
-    <ProgressBar
-        android:id="@+id/addressActivityProgressBar"
-        style="?android:attr/progressBarStyle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

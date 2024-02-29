@@ -8,16 +8,10 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
-import com.example.e_commerceapp.R;
 import com.example.e_commerceapp.databinding.ActivityAddressBinding;
 import com.example.e_commerceapp.models.AddressModel;
-import com.example.e_commerceapp.models.UserModel;
-import com.example.e_commerceapp.utils.ConstantValues;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -25,7 +19,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 public class AddressActivity extends AppCompatActivity {
     ActivityAddressBinding binding;
-    String firstAndLastName = "", cityName = "", stateName = "", areaName = "", districtName = "", landmarkName = "", pinCode = "", mobileNumber = "", addressId = "", addressStatus = "";
+    String firstAndLastName = "", cityName = "", stateName = "", areaName = "", districtName = "", landmarkName = "", pinCode = "", mobileNumber = "", addressId = "", addressStatus = "", buildingNameAndHouseNo = "";
     AddressModel addressModel;
     FirebaseDatabase firebaseDatabase;
     DatabaseReference databaseReference;
@@ -49,7 +43,7 @@ public class AddressActivity extends AppCompatActivity {
         binding.signUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (binding.firstAndLastNameAddAddressEditText.getText().toString().equals("") || binding.cityNameAddAddressEditText.getText().toString().equals("") || binding.stateNameAddAddressEditText.getText().toString().equals("") || binding.areaNameAddAddressEditText.getText().toString().equals("") || binding.districtNameAddAddressEditText.getText().toString().equals("") || String.valueOf(binding.pincodeAddAddressEditText.getText().toString()).equals("") || binding.landmarkNameAddAddressEditText.getText().toString().equals("") || String.valueOf(binding.mobileNumberAddAddressEditText.getText().toString()).equals("")) {
+                if (binding.firstAndLastNameAddAddressEditText.getText().toString().equals("") || binding.cityNameAddAddressEditText.getText().toString().equals("") || binding.stateNameAddAddressEditText.getText().toString().equals("") || binding.areaNameAddAddressEditText.getText().toString().equals("") || binding.districtNameAddAddressEditText.getText().toString().equals("") || String.valueOf(binding.pincodeAddAddressEditText.getText().toString()).equals("") || binding.landmarkNameAddAddressEditText.getText().toString().equals("") || String.valueOf(binding.mobileNumberAddAddressEditText.getText().toString()).equals("") || binding.buildingNameAndHouseNoEditText.getText().toString().equals("")) {
                     if (binding.firstAndLastNameAddAddressEditText.getText().toString().equals("")) {
                         binding.firstAndLastNameAddAddressEditText.setError("Please enter the recipient's name!");
                     }
@@ -74,6 +68,9 @@ public class AddressActivity extends AppCompatActivity {
                     if (String.valueOf(binding.mobileNumberAddAddressEditText.getText().toString()).equals("")) {
                         binding.mobileNumberAddAddressEditText.setError("Please enter mobile number");
                     }
+                    if (binding.buildingNameAndHouseNoEditText.getText().toString().equals("")) {
+                        binding.buildingNameAndHouseNoEditText.setError("Please enter the building name or house number!");
+                    }
                 } else {
                     firstAndLastName = binding.firstAndLastNameAddAddressEditText.getText().toString();
                     cityName = binding.cityNameAddAddressEditText.getText().toString();
@@ -83,8 +80,9 @@ public class AddressActivity extends AppCompatActivity {
                     pinCode = binding.pincodeAddAddressEditText.getText().toString();
                     landmarkName = binding.landmarkNameAddAddressEditText.getText().toString();
                     mobileNumber = binding.mobileNumberAddAddressEditText.getText().toString();
+                    buildingNameAndHouseNo = binding.buildingNameAndHouseNoEditText.getText().toString();
 
-                    addAddress();
+                    addAddress(); //Calling the addAddress() method to add the address details to the database.
 
                     binding.addAddressNestedScrollView.setVisibility(View.GONE);
                     binding.addressActivityProgressBar.setVisibility(View.VISIBLE);
@@ -95,7 +93,7 @@ public class AddressActivity extends AppCompatActivity {
 
     //Method for adding new address to the currentUser's node in the database.
     void addAddress() {
-        addressModel = new AddressModel(firstAndLastName, cityName, stateName, areaName, districtName, landmarkName, pinCode, mobileNumber, "", ConstantValues.ADDRESS_STATUS_SELECTED);
+        addressModel = new AddressModel(firstAndLastName, cityName, stateName, areaName, districtName, landmarkName, pinCode, mobileNumber, "", buildingNameAndHouseNo, true);
         DatabaseReference newAddressReference = databaseReference.child("users").child(currentUser.getUid()).child("user_addresses").push();
         addressId = newAddressReference.getKey();
         addressModel.setAddressId(addressId);
