@@ -19,7 +19,7 @@
 
 
         <EditText
-            android:id="@+id/homeFragmentSearchView"
+            android:id="@+id/cartFragmentSearchView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -34,7 +34,7 @@
 
 
         <ImageView
-            android:id="@+id/homeFragmentSearchIcon"
+            android:id="@+id/cartFragmentSearchIcon"
             android:layout_width="100dp"
             android:layout_height="match_parent"
             android:layout_weight="1"

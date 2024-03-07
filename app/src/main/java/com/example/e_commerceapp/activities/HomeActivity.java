@@ -20,6 +20,7 @@ import com.example.e_commerceapp.fragments.ProductDetailFragment;
 import com.example.e_commerceapp.fragments.ProfileFragment;
 import com.example.e_commerceapp.fragments.SearchResultsFragment;
 import com.example.e_commerceapp.fragments.UserAddressesFragment;
+import com.example.e_commerceapp.fragments.WishlistFragment;
 import com.example.e_commerceapp.models.CategoryModel;
 import com.example.e_commerceapp.models.ProductModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -102,5 +103,10 @@ public class HomeActivity extends AppCompatActivity {
     public void openAddAddressesFragment() {
         AddAddressFragment addAddressFragment = new AddAddressFragment();
         loadFragment(addAddressFragment, false);
+    }
+
+    public void openWishlistFragment() {
+        WishlistFragment wishlistFragment = new WishlistFragment();
+        loadFragment(wishlistFragment, false);
     }
 }

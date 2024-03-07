@@ -24,6 +24,7 @@ import com.example.e_commerceapp.activities.HomeActivity;
 import com.example.e_commerceapp.adapters.CartAdapter;
 import com.example.e_commerceapp.databinding.FragmentCartBinding;
 import com.example.e_commerceapp.models.CartModel;
+import com.example.e_commerceapp.models.ProductModel;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -33,6 +34,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class CartFragment extends Fragment {
     FragmentCartBinding binding;
@@ -44,6 +46,7 @@ public class CartFragment extends Fragment {
     float totalCartAmount = 0;
     float amountToAddForFreeDelivery = 0;
     int numberOfCartItems = 0;
+    ArrayList<ProductModel> searchResultArraylist;
 
     public CartFragment() {
         // Required empty public constructor
@@ -59,12 +62,25 @@ public class CartFragment extends Fragment {
         databaseReference = firebaseDatabase.getReference();
         auth = FirebaseAuth.getInstance();
         currentUser = auth.getCurrentUser();
+        searchResultArraylist = new ArrayList<>();
 
         binding.mainNestedScrollView.setVisibility(View.GONE);
         binding.cartFragmentProgressBar.setVisibility(View.VISIBLE);
 
         //Calling necessary functions here
         fetchCartItems();
+
+        binding.cartFragmentSearchIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String searchedText = binding.cartFragmentSearchView.getText().toString();
+                if (searchedText.length() > 0) {
+                    searchProducts(searchedText);
+                } else {
+                    Toast.makeText(requireContext(), "Please enter something to search!", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
 
         return binding.getRoot();
     }
@@ -99,7 +115,7 @@ public class CartFragment extends Fragment {
                                 cartModelArrayList.add(cartItem);
                             }
                         } catch (Exception e) {
-                            Log.e("These are cart detaisl : ", "Error parsing cart item", e);
+                            Log.e("These are cart details : ", "Error parsing cart item", e);
                         }
                     }
 
@@ -179,5 +195,31 @@ public class CartFragment extends Fragment {
 
     boolean eligibleForFreeDelivery() {
         return totalCartAmount >= 499;
+    }
+
+    public void searchProducts(String s) {
+        DatabaseReference productNodeRef = databaseReference.child("products");
+        productNodeRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                searchResultArraylist.clear();
+
+                for (DataSnapshot productSnapshot : snapshot.getChildren()) {
+                    ProductModel productModel = productSnapshot.getValue(ProductModel.class);
+                    if (productModel != null && productModel.getProductName().toLowerCase().contains(s.toLowerCase()) || Objects.requireNonNull(productModel).getProductDescription().toLowerCase().contains(s.toLowerCase())) {
+                        searchResultArraylist.add(productModel);
+                    }
+                }
+
+                //Sending the search results to the SearchResultsFragment
+                HomeActivity homeActivity = (HomeActivity) requireActivity();
+                homeActivity.openSearchResultsFragment(searchResultArraylist, s);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(requireContext(), "Failed to fetch products!", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

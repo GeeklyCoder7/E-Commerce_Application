@@ -36,6 +36,13 @@ public class ProfileFragment extends Fragment {
             }
         });
 
+        binding.profileSectionUserWishlistButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                homeActivity.openWishlistFragment();
+            }
+        });
+
         return binding.getRoot();
     }
 
