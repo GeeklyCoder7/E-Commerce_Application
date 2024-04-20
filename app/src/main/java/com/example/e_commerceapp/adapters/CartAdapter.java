@@ -37,12 +37,13 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartAdapterVie
             @Override
             public void onSuccess(Void unused) {
                 Toast.makeText(context, "Product removed successfully.", Toast.LENGTH_SHORT).show();
-                if (cartModelArrayList.size() > 0) {
+                if (position >= 0 && position < cartModelArrayList.size()) {
                     cartModelArrayList.remove(position);
+                    notifyItemRemoved(position);
+                    notifyItemRangeChanged(position, getItemCount());
+                } else {
+                    Toast.makeText(context, "Some error occurred!", Toast.LENGTH_SHORT).show();
                 }
-
-                notifyItemRemoved(position);
-                notifyItemRangeChanged(position, getItemCount());
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -134,4 +135,3 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartAdapterVie
         }
     }
 }
-

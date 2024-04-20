@@ -1,7 +1,10 @@
 package com.example.e_commerceapp.adapters;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,8 +17,10 @@ import com.example.e_commerceapp.R;
 import com.example.e_commerceapp.databinding.UserAddressesSampleLayoutBinding;
 import com.example.e_commerceapp.models.AddressModel;
 import com.example.e_commerceapp.utils.ConstantValues;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -49,6 +54,7 @@ public class UserAddressesAdapter extends RecyclerView.Adapter<UserAddressesAdap
         databaseReference = database.getReference();
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseUser = firebaseAuth.getCurrentUser();
+        assert firebaseUser != null;
         String userId = firebaseUser.getUid();
 
         AddressModel addressModel = userAddressesArrayList.get(position);
@@ -67,6 +73,38 @@ public class UserAddressesAdapter extends RecyclerView.Adapter<UserAddressesAdap
                 if (!addressModel.isDefault()) {
                     updateAddressAndButtonStatus(position);
                 }
+            }
+        });
+        
+        //Deleting the address
+        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setMessage("Do you want to delete this address?")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                databaseReference.child("users").child(firebaseUser.getUid()).child("user_addresses").child(addressModel.getAddressId()).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void unused) {
+                                        Toast.makeText(context, "Successfully removed address.", Toast.LENGTH_SHORT).show();
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Toast.makeText(context, "Failed to remove address!", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                            }
+                        })
+                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        }).show();
+                return false;
             }
         });
     }

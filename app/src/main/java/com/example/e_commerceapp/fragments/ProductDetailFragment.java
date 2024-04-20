@@ -200,17 +200,19 @@ public class ProductDetailFragment extends Fragment {
         });
     }
     void setBookmarkIcon() {
-        checkIsInWishlist(new WishlistCheckCallback() {
+        if (isAdded()) {
+            checkIsInWishlist(new WishlistCheckCallback() {
 
-            @Override
-            public void onWishlistCheck(int result) {
-                if (result == 1) {
-                    binding.bookmarkImageView.setImageResource(R.drawable.bookmark_added_icon);
-                } else {
-                    binding.bookmarkImageView.setImageResource(R.drawable.bookmark_not_added_icon);
+                @Override
+                public void onWishlistCheck(int result) {
+                    if (result == 1) {
+                        binding.bookmarkImageView.setImageResource(R.drawable.bookmark_added_icon);
+                    } else {
+                        binding.bookmarkImageView.setImageResource(R.drawable.bookmark_not_added_icon);
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
     void checkIsInWishlist(WishlistCheckCallback callback) {

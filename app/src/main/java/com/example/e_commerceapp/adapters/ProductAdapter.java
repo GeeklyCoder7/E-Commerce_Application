@@ -1,6 +1,8 @@
 package com.example.e_commerceapp.adapters;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.provider.ContactsContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,8 +23,11 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
@@ -36,6 +41,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductA
     DatabaseReference cartReference;
     FirebaseAuth auth = FirebaseAuth.getInstance();
     FirebaseUser currentUser = auth.getCurrentUser();
+    boolean productIsInCart = false;
 
     public ProductAdapter(Context context, ArrayList<ProductModel> productModelArrayList, int flag) {
         this.context = context;
@@ -53,6 +59,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductA
         }
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull ProductAdapterViewHolder holder, int position) {
         ProductModel productModel = productModelArrayList.get(position);
@@ -62,21 +69,56 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductA
             holder.homeActivityProductCardBinding.productTitleTextView.setText(productModel.getProductName());
             holder.homeActivityProductCardBinding.productDescriptionTextView.setText(productModel.getProductDescription());
             holder.homeActivityProductCardBinding.productPriceTextView.setText("" + productModel.getProductPrice());
+
+            databaseReference.child("users").child(currentUser.getUid()).child("cart_items").orderByChild("productId").equalTo(productModel.getProductId()).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (snapshot.exists()) {
+                        productIsInCart = true;
+                        holder.homeActivityProductCardBinding.homeScreenAddToCartButton.setBackgroundResource(R.drawable.product_already_in_cart_button_background_drawable);
+                        holder.homeActivityProductCardBinding.homeScreenAddToCartButton.setText("Added");
+                        holder.homeActivityProductCardBinding.homeScreenAddToCartButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.added_to_cart_left_drawable_icon, 0, 0, 0);
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    Toast.makeText(context, "Some error occurred!", Toast.LENGTH_SHORT).show();
+                }
+            });
+
             holder.homeActivityProductCardBinding.homeScreenAddToCartButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    CartModel cartModel = new CartModel(productModel.getProductName(), productModel.getProductDescription(), productModel.getProductCategory(), productModel.getProductImage(), productModel.getProductPrice(), productModel.getProductId(), 1);
-                    cartReference = databaseReference.child("users").child(currentUser.getUid()).child("cart_items");
-                    DatabaseReference particularCartItemReference = cartReference.child(cartModel.getProductId());
-                    particularCartItemReference.setValue(cartModel).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    databaseReference.child("users").child(currentUser.getUid()).child("cart_items").orderByChild("productId").equalTo(productModel.getProductId()).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
-                        public void onSuccess(Void unused) {
-                            Toast.makeText(context, "Added to cart.", Toast.LENGTH_SHORT).show();
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            if (snapshot.exists()) {
+                                Toast.makeText(context, "Product is Already in the cart!", Toast.LENGTH_SHORT).show();
+                            } else {
+                                CartModel cartModel = new CartModel(productModel.getProductName(), productModel.getProductDescription(), productModel.getProductCategory(), productModel.getProductImage(), productModel.getProductPrice(), productModel.getProductId(), 1);
+                                cartReference = databaseReference.child("users").child(currentUser.getUid()).child("cart_items");
+                                DatabaseReference particularCartItemReference = cartReference.child(cartModel.getProductId());
+                                particularCartItemReference.setValue(cartModel).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void unused) {
+                                        holder.homeActivityProductCardBinding.homeScreenAddToCartButton.setBackgroundResource(R.drawable.product_already_in_cart_button_background_drawable);
+                                        holder.homeActivityProductCardBinding.homeScreenAddToCartButton.setText("Added");
+                                        holder.homeActivityProductCardBinding.homeScreenAddToCartButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.added_to_cart_left_drawable_icon, 0, 0, 0);
+                                        Toast.makeText(context, "Added to cart.", Toast.LENGTH_SHORT).show();
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Toast.makeText(context, "Failed to add to cart!", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                            }
                         }
-                    }).addOnFailureListener(new OnFailureListener() {
+
                         @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(context, "Failed to add to cart!", Toast.LENGTH_SHORT).show();
+                        public void onCancelled(@NonNull DatabaseError error) {
+                            Toast.makeText(context, "Some error occurred!", Toast.LENGTH_SHORT).show();
                         }
                     });
                 }
@@ -92,6 +134,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductA
             Glide.with(context).load(productModel.getProductImage()).into(holder.detailsActivityProductCardBinding.detailsActivityProductImageView);
             holder.detailsActivityProductCardBinding.detailsActivityProductNameTextView.setText("" + productModel.getProductName());
             holder.detailsActivityProductCardBinding.detailsActivityProductDescriptionTextView.setText("" + productModel.getProductDescription());
+
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

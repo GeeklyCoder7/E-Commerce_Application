@@ -92,6 +92,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
+                    android:layout_marginBottom="5dp"
                     android:layout_weight="1"
                     android:background="@drawable/cart_item_delete_button_background_drawable"
                     android:gravity="center"
@@ -102,16 +103,19 @@
                     android:textSize="20sp"
                     android:textStyle="normal" />
 
-                <Button
+                <TextView
                     android:id="@+id/wishlistFragmentAddtoCartButton"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:backgroundTint="@color/add_to_cart_button_background_color"
+                    android:layout_height="50dp"
+                    android:background="@drawable/product_not_in_cart_button_background_drawable"
+                    android:clickable="true"
+                    android:gravity="center"
+                    android:padding="8dp"
                     android:text="Add to Cart"
+                    android:textAlignment="gravity"
                     android:textColor="@color/black"
-                    android:textSize="20sp"
-                    android:textStyle="normal"
-                    app:cornerRadius="5dp" />
+                    android:textSize="22sp"
+                    android:textStyle="bold" />
             </LinearLayout>
         </LinearLayout>
     </androidx.cardview.widget.CardView>
