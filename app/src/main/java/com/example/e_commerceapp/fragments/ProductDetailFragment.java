@@ -145,11 +145,44 @@ public class ProductDetailFragment extends Fragment {
         binding = null;
     }
 
+    //Method for setting the bookmark icon
+
+    void setBookmarkIcon() {
+        if (isAdded()) {
+            checkIsInWishlist(new WishlistCheckCallback() {
+
+                @Override
+                public void onWishlistCheck(int result) {
+                    if (result == 1) {
+                        binding.bookmarkImageView.setImageResource(R.drawable.bookmark_added_icon);
+                    } else {
+                        binding.bookmarkImageView.setImageResource(R.drawable.bookmark_not_added_icon);
+                    }
+                }
+            });
+        }
+    }
+
     void setUpProductDetails() {
         Glide.with(requireContext()).load(productImage).into(binding.productDetailsImageView);
         binding.productDetailsPriceTextView.setText("Price : INR " + productPrice);
         binding.productDetailsDescriptionTextView.setText("" + productDescription);
         binding.productDetailsProductNameTextView.setText("" + productName);
+        databaseReference.child("users").child(currentUser.getUid()).child("cart_items").orderByChild("productId").equalTo(productId).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    binding.productDetailsAddToCartButton.setBackgroundResource(R.drawable.product_already_in_cart_button_background_drawable);
+                    binding.productDetailsAddToCartButton.setText("Added");
+                    binding.productDetailsAddToCartButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.added_to_cart_left_drawable_icon, 0, 0, 0);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
         setBookmarkIcon();
     }
 
@@ -183,23 +216,38 @@ public class ProductDetailFragment extends Fragment {
     }
 
     void addProductToCart() {
-        CartModel cartModel = new CartModel(receivedProductModelObj.getProductName(), receivedProductModelObj.getProductDescription(), receivedProductModelObj.getProductCategory(), receivedProductModelObj.getProductImage(), receivedProductModelObj.getProductPrice(), receivedProductModelObj.getProductId(), 1);
-        cartReference = databaseReference.child("users").child(currentUser.getUid()).child("cart_items");
-        DatabaseReference particularCartItemReference = cartReference.child(cartModel.getProductId());
+        databaseReference.child("users").child(currentUser.getUid()).child("cart_items").orderByChild("productId").equalTo(productId).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    Toast.makeText(requireContext(), "Product is already in cart!", Toast.LENGTH_SHORT).show();
+                } else {
+                    CartModel cartModel = new CartModel(receivedProductModelObj.getProductName(), receivedProductModelObj.getProductDescription(), receivedProductModelObj.getProductCategory(), receivedProductModelObj.getProductImage(), receivedProductModelObj.getProductPrice(), receivedProductModelObj.getProductId(), 1);
+                    cartReference = databaseReference.child("users").child(currentUser.getUid()).child("cart_items");
+                    DatabaseReference particularCartItemReference = cartReference.child(cartModel.getProductId());
 
-        particularCartItemReference.setValue(cartModel).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void unused) {
-                Toast.makeText(requireContext(), "Added to cart.", Toast.LENGTH_SHORT).show();
+                    particularCartItemReference.setValue(cartModel).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void unused) {
+                            binding.productDetailsAddToCartButton.setBackgroundResource(R.drawable.product_already_in_cart_button_background_drawable);
+                            binding.productDetailsAddToCartButton.setText("Added");
+                            binding.productDetailsAddToCartButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.added_to_cart_left_drawable_icon, 0, 0, 0);
+                            Toast.makeText(requireContext(), "Added to cart.", Toast.LENGTH_SHORT).show();
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(requireContext(), "Failed to add to cart!", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
             }
-        }).addOnFailureListener(new OnFailureListener() {
+
             @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(requireContext(), "Failed to add to cart!", Toast.LENGTH_SHORT).show();
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(requireContext(), "Some error occurred!", Toast.LENGTH_SHORT).show();
             }
         });
-    }
-    void setBookmarkIcon() {
         if (isAdded()) {
             checkIsInWishlist(new WishlistCheckCallback() {
 

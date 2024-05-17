@@ -41,6 +41,38 @@
             app:srcCompat="@drawable/baseline_search_24" />
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/emptyWishlistLinearLayout"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/wishlistFragmentSearchSectionLinearLayout">
+
+        <ImageView
+            android:id="@+id/emptyWishlistIconImageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="15dp"
+            android:src="@drawable/nothingtoshow" />
+
+        <TextView
+            android:id="@+id/textView8"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="15dp"
+            android:text="Nothing in WishList"
+            android:textAlignment="center"
+            android:textColor="#00BCD4"
+            android:textSize="34sp"
+            android:textStyle="bold|italic" />
+    </LinearLayout>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/wishlistReyclerView"
         android:layout_width="0dp"

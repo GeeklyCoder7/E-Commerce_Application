@@ -29,7 +29,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductAdapterViewHolder> {
     Context context;
@@ -69,6 +73,13 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductA
             holder.homeActivityProductCardBinding.productTitleTextView.setText(productModel.getProductName());
             holder.homeActivityProductCardBinding.productDescriptionTextView.setText(productModel.getProductDescription());
             holder.homeActivityProductCardBinding.productPriceTextView.setText("" + productModel.getProductPrice());
+
+            //Setting the delivery estimate date for the product
+            Calendar calendar = Calendar.getInstance();
+            calendar.add(Calendar.DAY_OF_MONTH, 7);
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd MMMM, yyyy", Locale.getDefault());
+            String deliveryEstimate = simpleDateFormat.format(calendar.getTime());
+            holder.homeActivityProductCardBinding.productDeliveryEstimateTextView.setText("Delivery estimate : \n" + deliveryEstimate);
 
             databaseReference.child("users").child(currentUser.getUid()).child("cart_items").orderByChild("productId").equalTo(productModel.getProductId()).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override

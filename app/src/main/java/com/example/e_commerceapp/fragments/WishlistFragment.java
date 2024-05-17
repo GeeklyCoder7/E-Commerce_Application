@@ -85,8 +85,11 @@ public class WishlistFragment extends Fragment {
     }
 
     void setUpWishlistRecyclerView() {
-        WishlistAdapter wishlistAdapter = new WishlistAdapter(requireContext(), wishlistArraylist);
-        binding.wishlistReyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
-        binding.wishlistReyclerView.setAdapter(wishlistAdapter);
+        if (wishlistArraylist.isEmpty()) {
+            binding.emptyWishlistLinearLayout.setVisibility(View.VISIBLE);
+        }
+            WishlistAdapter wishlistAdapter = new WishlistAdapter(requireContext(), wishlistArraylist);
+            binding.wishlistReyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+            binding.wishlistReyclerView.setAdapter(wishlistAdapter);
     }
 }

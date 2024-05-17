@@ -125,6 +125,7 @@ public class WishlistAdapter extends RecyclerView.Adapter<WishlistAdapter.Wishli
             @Override
             public void onClick(View v) {
                 databaseReference.child("users").child(currentUser.getUid()).child("wishlist").child(wishlistModel.getProductId()).removeValue();
+
             }
         });
     }

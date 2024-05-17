@@ -2,10 +2,9 @@ package com.example.e_commerceapp.models;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-
 import androidx.annotation.NonNull;
 
-public class ProductModel implements Parcelable{
+public class ProductModel implements Parcelable {
     String productName, productDescription, productCategory, productImage, productId;
     Float productPrice;
 

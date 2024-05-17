@@ -10,6 +10,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import android.provider.ContactsContract;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
@@ -23,7 +24,9 @@ import com.example.e_commerceapp.R;
 import com.example.e_commerceapp.activities.HomeActivity;
 import com.example.e_commerceapp.adapters.CartAdapter;
 import com.example.e_commerceapp.databinding.FragmentCartBinding;
+import com.example.e_commerceapp.models.AddressModel;
 import com.example.e_commerceapp.models.CartModel;
+import com.example.e_commerceapp.models.OrderModel;
 import com.example.e_commerceapp.models.ProductModel;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -33,7 +36,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 import java.util.Objects;
 
 public class CartFragment extends Fragment {
@@ -47,6 +54,7 @@ public class CartFragment extends Fragment {
     float amountToAddForFreeDelivery = 0;
     int numberOfCartItems = 0;
     ArrayList<ProductModel> searchResultArraylist;
+    String deliveryAddressId = "";
 
     public CartFragment() {
         // Required empty public constructor
@@ -147,7 +155,7 @@ public class CartFragment extends Fragment {
 
         for (int i = 0; i < cartModelArrayList.size(); i++) {
             CartModel cartModel = cartModelArrayList.get(i);
-            
+
             if (cartModel.getProductPrice() != null) {
                 int currentProductQuantity = cartModel.getCartProductQuantity();
                 float currentProductPrice = cartModel.getProductPrice();
@@ -172,6 +180,13 @@ public class CartFragment extends Fragment {
             } else {
                 binding.proceedToBuyButton.setText("Proceed to buy (" + numberOfCartItems + ") items");
             }
+
+            binding.proceedToBuyButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    placeOrder(); // Call placeOrder() method when "Proceed to Buy" button is clicked
+                }
+            });
         }
 
         if (eligibleForFreeDelivery()) {
@@ -221,5 +236,67 @@ public class CartFragment extends Fragment {
                 Toast.makeText(requireContext(), "Failed to fetch products!", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    //Method for placing the order
+    //Method for placing the order
+    void placeOrder() {
+        DatabaseReference userOrdersNodeRef = databaseReference.child("users").child(currentUser.getUid()).child("user_orders");
+        DatabaseReference newOrderNodeRef = userOrdersNodeRef.push();
+        String orderId = newOrderNodeRef.getKey();
+        String orderDate = getCurrentDateAndTime();
+        String orderStatus = "Order Placed!";
+
+        //Calculating the delivery estimate for the order to be placed
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_MONTH, 7);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd MMMM, yyyy", Locale.getDefault());
+        final String deliveryEstimate = simpleDateFormat.format(calendar.getTime());
+
+        //Getting the ID of the default delivery address
+        databaseReference.child("users").child(currentUser.getUid()).child("user_addresses").orderByChild("default").equalTo(true).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    for (DataSnapshot addressSnapshot : snapshot.getChildren()) {
+                        deliveryAddressId = addressSnapshot.getKey();
+                        //Creating a new order model
+                        OrderModel orderModel = new OrderModel();
+                        orderModel.setOrderId(orderId);
+                        orderModel.setOrderDate(orderDate);
+                        orderModel.setOrderStatus(orderStatus);
+                        orderModel.setCartTotal(totalCartAmount);
+                        orderModel.setDeliveryAddressId(deliveryAddressId);
+                        orderModel.setDeliveryEstimate(deliveryEstimate);
+
+                        newOrderNodeRef.setValue(orderModel);
+
+                        for (CartModel cartModel : cartModelArrayList) {
+                            newOrderNodeRef.child(cartModel.getProductId()).setValue(cartModel);
+                        }
+
+                        databaseReference.child("users").child(currentUser.getUid()).child("cart_items").removeValue();
+
+                        // Notify the user that the order has been placed
+                        Toast.makeText(requireContext(), "Order placed successfully!", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                } else {
+                    Toast.makeText(requireContext(), "No default address found!", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(requireContext(), "Some error occurred!", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+
+    //Method for fetching user's current date and time in proper format
+    String getCurrentDateAndTime() {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm a", Locale.getDefault());
+        return simpleDateFormat.format(new Date());
     }
 }
