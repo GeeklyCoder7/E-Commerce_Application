@@ -1,8 +1,10 @@
 package com.example.e_commerceapp.fragments;
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.SocketKeepalive;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -24,6 +26,7 @@ import com.example.e_commerceapp.R;
 import com.example.e_commerceapp.activities.HomeActivity;
 import com.example.e_commerceapp.adapters.CartAdapter;
 import com.example.e_commerceapp.databinding.FragmentCartBinding;
+import com.example.e_commerceapp.databinding.ProceedToBuyDialogBoxLayoutBinding;
 import com.example.e_commerceapp.models.AddressModel;
 import com.example.e_commerceapp.models.CartModel;
 import com.example.e_commerceapp.models.OrderModel;
@@ -97,6 +100,10 @@ public class CartFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+    }
+
+    public interface DeliveryAddressCallback {
+        void onAddressFetched(String deliveryAddress);
     }
 
     void setUpCartItemsRecyclerView() {
@@ -184,7 +191,8 @@ public class CartFragment extends Fragment {
             binding.proceedToBuyButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    placeOrder(); // Call placeOrder() method when "Proceed to Buy" button is clicked
+                    takeOrderConfirmation();
+
                 }
             });
         }
@@ -238,7 +246,6 @@ public class CartFragment extends Fragment {
         });
     }
 
-    //Method for placing the order
     //Method for placing the order
     void placeOrder() {
         DatabaseReference userOrdersNodeRef = databaseReference.child("users").child(currentUser.getUid()).child("user_orders");
@@ -298,5 +305,85 @@ public class CartFragment extends Fragment {
     String getCurrentDateAndTime() {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm a", Locale.getDefault());
         return simpleDateFormat.format(new Date());
+    }
+
+    //Method for taking confirmation from the user for placing the order
+    @SuppressLint("SetTextI18n")
+    void takeOrderConfirmation() {
+        Dialog dialog = new Dialog(requireContext());
+        ProceedToBuyDialogBoxLayoutBinding dialogBoxLayoutBinding = ProceedToBuyDialogBoxLayoutBinding.inflate(getLayoutInflater());
+        dialog.setContentView(dialogBoxLayoutBinding.getRoot());
+
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        }
+
+        //Setting the delivery address for user to confirm the address
+        getDeliveryAddressString(new DeliveryAddressCallback() {
+            @Override
+            public void onAddressFetched(String deliveryAddress) {
+                dialogBoxLayoutBinding.deliveryAddressTextView.setText(deliveryAddress);
+            }
+        });
+
+        dialogBoxLayoutBinding.proceedOrderButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                placeOrder();
+                dialog.dismiss();
+            }
+        });
+
+        dialogBoxLayoutBinding.cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(requireContext(), "Negative Button!", Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
+            }
+        });
+
+        dialogBoxLayoutBinding.changeDeliveryAddressButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        dialogBoxLayoutBinding.changeDeliveryAddressButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                HomeActivity homeActivity = (HomeActivity) requireActivity();
+                homeActivity.openUserAddressesFragment();
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
+    }
+
+    //Method for creating the default delivery address string
+    void getDeliveryAddressString(DeliveryAddressCallback deliveryAddressCallback) {
+        databaseReference.child("users").child(currentUser.getUid()).child("user_addresses").orderByChild("default").equalTo(true).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    for (DataSnapshot defaultAddressSnapshot : snapshot.getChildren()) {
+                        AddressModel defaultDeliveryAddressModel = defaultAddressSnapshot.getValue(AddressModel.class);
+                        if (defaultDeliveryAddressModel != null) {
+                            String deliveryAddressString = defaultDeliveryAddressModel.getMobileNumber() + " - " + defaultDeliveryAddressModel.getBuildingNameAndHouseNo() + ", (" + defaultDeliveryAddressModel.getLandmarkName() + ") , " +  defaultDeliveryAddressModel.getAreaName() + ", " + defaultDeliveryAddressModel.getCityName() + ", " + defaultDeliveryAddressModel.getStateName() + ", " + defaultDeliveryAddressModel.getDistrictName() + ", " + " - " + defaultDeliveryAddressModel.getPinCode();
+                            deliveryAddressCallback.onAddressFetched(deliveryAddressString);
+                        }
+                    }
+                } else {
+                    deliveryAddressCallback.onAddressFetched("No default delivery addresses found!");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(requireContext(), "Failed to fetch the defaul delivery address!", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }
