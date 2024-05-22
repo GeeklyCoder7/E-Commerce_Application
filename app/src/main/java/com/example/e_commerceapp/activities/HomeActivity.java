@@ -15,6 +15,7 @@ import com.example.e_commerceapp.databinding.ActivityHomeBinding;
 import com.example.e_commerceapp.fragments.AddAddressFragment;
 import com.example.e_commerceapp.fragments.CartFragment;
 import com.example.e_commerceapp.fragments.HomeFragment;
+import com.example.e_commerceapp.fragments.OrderedProductsShowingFragment;
 import com.example.e_commerceapp.fragments.OrdersFragment;
 import com.example.e_commerceapp.fragments.ProductDetailFragment;
 import com.example.e_commerceapp.fragments.ProfileFragment;
@@ -108,5 +109,10 @@ public class HomeActivity extends AppCompatActivity {
     public void openWishlistFragment() {
         WishlistFragment wishlistFragment = new WishlistFragment();
         loadFragment(wishlistFragment, false);
+    }
+
+    public void openOrderedProductsShowingFragment(String orderId) {
+        OrderedProductsShowingFragment orderedProductsShowingFragment = new OrderedProductsShowingFragment(orderId);
+        loadFragment(orderedProductsShowingFragment, false);
     }
 }

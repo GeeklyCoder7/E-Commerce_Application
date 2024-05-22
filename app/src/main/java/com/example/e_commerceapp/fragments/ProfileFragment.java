@@ -1,5 +1,8 @@
 package com.example.e_commerceapp.fragments;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -9,6 +12,7 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.e_commerceapp.activities.HomeActivity;
 import com.example.e_commerceapp.activities.SignInActivity;
@@ -55,7 +59,7 @@ public class ProfileFragment extends Fragment {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                Toast.makeText(requireActivity(), "Failed to fetch the user's name", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -70,6 +74,26 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 homeActivity.openWishlistFragment();
+            }
+        });
+
+        binding.profileSectionLogOutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+                builder.setMessage("Are you sure you want to log out of your account?")
+                                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        logOutUser();
+                                    }
+                                })
+                                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                dialog.dismiss();
+                                            }
+                                        }).show();
             }
         });
 

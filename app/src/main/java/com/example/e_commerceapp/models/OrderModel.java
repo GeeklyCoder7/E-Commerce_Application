@@ -4,15 +4,15 @@ public class OrderModel {
     String orderDate = "";
     String orderStatus = "";
     String orderId = "";
-    float cartTotal = 0;
+    float orderTotal = 0;
     String deliveryAddressId = "";
     String deliveryEstimate = "";
 
-    public OrderModel(String orderDate, String orderStatus, String orderId, int cartTotal, String deliveryAddressId, String deliveryEstimate) {
+    public OrderModel(String orderDate, String orderStatus, String orderId, int orderTotal, String deliveryAddressId, String deliveryEstimate) {
         this.orderDate = orderDate;
         this.orderStatus = orderStatus;
         this.orderId = orderId;
-        this.cartTotal = cartTotal;
+        this.orderTotal = orderTotal;
         this.deliveryAddressId = deliveryAddressId;
         this.deliveryEstimate = deliveryEstimate;
     }
@@ -45,12 +45,12 @@ public class OrderModel {
         this.orderId = orderId;
     }
 
-    public float getCartTotal() {
-        return cartTotal;
+    public float getOrderTotal() {
+        return orderTotal;
     }
 
-    public void setCartTotal(float cartTotal) {
-        this.cartTotal = cartTotal;
+    public void setOrderTotal(float orderTotal) {
+        this.orderTotal = orderTotal;
     }
 
     public String getDeliveryAddressId() {
