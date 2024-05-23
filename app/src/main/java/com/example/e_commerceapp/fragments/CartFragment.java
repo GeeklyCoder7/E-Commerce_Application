@@ -28,6 +28,7 @@ import com.example.e_commerceapp.models.AddressModel;
 import com.example.e_commerceapp.models.CartModel;
 import com.example.e_commerceapp.models.OrderModel;
 import com.example.e_commerceapp.models.ProductModel;
+import com.example.e_commerceapp.utils.ConstantValues;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -249,7 +250,7 @@ public class CartFragment extends Fragment {
         DatabaseReference newOrderNodeRef = userOrdersNodeRef.push();
         String orderId = newOrderNodeRef.getKey();
         String orderDate = getCurrentDateAndTime();
-        String orderStatus = "Order Placed!";
+        String orderStatus = ConstantValues.ORDER_STATUS_ACTIVE;
 
         //Calculating the delivery estimate for the order to be placed
         Calendar calendar = Calendar.getInstance();

@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.e_commerceapp.R;
+import com.example.e_commerceapp.activities.HomeActivity;
 import com.example.e_commerceapp.databinding.CartItemSampleLayoutBinding;
 import com.example.e_commerceapp.models.CartModel;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -117,6 +118,14 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartAdapterVie
                         }
                     });
                 }
+            }
+        });
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                HomeActivity homeActivity = ((HomeActivity) context);
+                homeActivity.openProductDetailsFragment(cartModel.getProductId());
             }
         });
     }

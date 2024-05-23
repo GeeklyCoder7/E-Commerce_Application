@@ -5,4 +5,7 @@ public class ConstantValues {
     public static final int FLAG_ADAPTER_CALLED_THROUGH_PRODUCT_DETAILS_ACTIVITY = 2;
     public static final String ADDRESS_STATUS_DEFAULT = "DEFAULT";
     public static final String ADDRESS_STATUS_NON_DEFAULT = "NON-DEFAULT";
+    public static final String ORDER_STATUS_ACTIVE = "ACTIVE";
+    public static final String ORDER_STATUS_DELIVERED = "DELIVERED";
+    public static final String ORDER_STATUS_CANCELLED = "CANCELLED";
 }

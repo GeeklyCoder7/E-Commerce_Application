@@ -46,7 +46,6 @@ public class OrderedProductsAdapter extends RecyclerView.Adapter<OrderedProducts
             }
         });
     }
-
     @Override
     public int getItemCount() {
         return cartModelArrayList.size();
