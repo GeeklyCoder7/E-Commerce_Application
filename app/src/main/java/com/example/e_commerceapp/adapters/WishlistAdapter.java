@@ -117,7 +117,7 @@ public class WishlistAdapter extends RecyclerView.Adapter<WishlistAdapter.Wishli
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((HomeActivity) context).openProductDetailsFragment(wishlistModel);
+                ((HomeActivity) context).openProductDetailsFragment(wishlistModel.getProductId());
             }
         });
 

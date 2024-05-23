@@ -79,11 +79,8 @@ public class HomeActivity extends AppCompatActivity {
         fragmentTransaction.commit();
     }
 
-    public void openProductDetailsFragment(ProductModel productModel) {
-        ProductDetailFragment productDetailFragment = new ProductDetailFragment();
-        Bundle bundle = new Bundle();
-        bundle.putParcelable("productModel", productModel);
-        productDetailFragment.setArguments(bundle);
+    public void openProductDetailsFragment(String productId) {
+        ProductDetailFragment productDetailFragment = new ProductDetailFragment(productId);
         loadFragment(productDetailFragment, false);
     }
 

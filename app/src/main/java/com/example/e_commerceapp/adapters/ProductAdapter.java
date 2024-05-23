@@ -138,7 +138,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductA
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    ((HomeActivity) context).openProductDetailsFragment(productModel);
+                    ((HomeActivity) context).openProductDetailsFragment(productModel.getProductId());
                 }
             });
         } else {
@@ -149,7 +149,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductA
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    ((HomeActivity) context).openProductDetailsFragment(productModel);
+                    ((HomeActivity) context).openProductDetailsFragment(productModel.getProductId());
                 }
             });
         }

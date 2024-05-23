@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.e_commerceapp.R;
+import com.example.e_commerceapp.activities.HomeActivity;
 import com.example.e_commerceapp.databinding.OrderedProductsLayoutDesignBinding;
 import com.example.e_commerceapp.models.CartModel;
 
@@ -35,6 +36,15 @@ public class OrderedProductsAdapter extends RecyclerView.Adapter<OrderedProducts
         CartModel orderedItemModel = cartModelArrayList.get(position);
         holder.binding.orderedProductNameTextView.setText(orderedItemModel.getProductName());
         Glide.with(context).load(orderedItemModel.getProductImage()).into(holder.binding.orderedProductImageView);
+        holder.binding.orderedProductQuantityTextView.setText("X " + orderedItemModel.getCartProductQuantity());
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                HomeActivity homeActivity = ((HomeActivity) context);
+                homeActivity.openProductDetailsFragment(orderedItemModel.getProductId());
+            }
+        });
     }
 
     @Override

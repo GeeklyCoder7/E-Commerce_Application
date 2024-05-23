@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,8 +37,7 @@ import java.util.Objects;
 
 public class ProductDetailFragment extends Fragment {
     FragmentProductDetailBinding binding;
-    ProductModel receivedProductModelObj;
-    String productName, productDescription, productCategory, productImage, productId;
+
     Float productPrice;
     private FirebaseDatabase firebaseDatabase;
     private DatabaseReference databaseReference;
@@ -45,97 +45,88 @@ public class ProductDetailFragment extends Fragment {
     FirebaseAuth auth = FirebaseAuth.getInstance();
     FirebaseUser currentUser = auth.getCurrentUser();
     ArrayList<ProductModel> productModelArrayList;
-    int inWishlistFlag = -1; // -1 indicates that the product is not in wishlist.
+    int inWishlistFlag = -1; // -1 indicates that the product is not in wishlist.\
+    String productId;
+    ProductModel currentProductModel;
 
-    public ProductDetailFragment() {
-        // Required empty public constructor
+    public ProductDetailFragment(String productId) {
+        this.productId = productId;
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = FragmentProductDetailBinding.inflate(inflater, container, false);
 
-        // Receiving the product object from the HomeActivity
-        Bundle arguments = getArguments();
-        if (arguments != null) {
-            receivedProductModelObj = arguments.getParcelable("productModel");
+        //Initializing variables here
+        firebaseDatabase = FirebaseDatabase.getInstance();
+        databaseReference = firebaseDatabase.getReference();
+        productModelArrayList = new ArrayList<>();
 
-            if (receivedProductModelObj != null) {
-                productName = receivedProductModelObj.getProductName();
-                productDescription = receivedProductModelObj.getProductDescription();
-                productCategory = receivedProductModelObj.getProductCategory();
-                productImage = receivedProductModelObj.getProductImage();
-                productId = receivedProductModelObj.getProductId();
-                productPrice = receivedProductModelObj.getProductPrice();
+        //Calling necessary functions here
+        setUpProductDetails();
+        fetchRandomProducts();
 
-                // Initializing variables
-                firebaseDatabase = FirebaseDatabase.getInstance();
-                databaseReference = firebaseDatabase.getReference();
-                productModelArrayList = new ArrayList<>();
-
-                // Calling necessary functions here
-                setUpProductDetails();
-                fetchRandomProducts();
-
-                binding.productDetailsAddToCartButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        addProductToCart();
-                    }
-                });
-
-                binding.bookmarkImageView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        binding.productDetailsFragmentProgressBar.setVisibility(View.VISIBLE);
-                        binding.nestedScrollView.setVisibility(View.GONE);
-                        dimScreen();
-                        checkIsInWishlist(new WishlistCheckCallback() {
-                            @Override
-                            public void onWishlistCheck(int result) {
-                                binding.productDetailsFragmentProgressBar.setVisibility(View.GONE);
-                                binding.nestedScrollView.setVisibility(View.VISIBLE);
-                                restoreScreenBrightness();
-                                if (result == -1) { // Product is not in wishlist
-                                    ProductModel productModel = new ProductModel(productName, productDescription, productCategory, productImage, productPrice, productId);
-                                    DatabaseReference newWishlistProductRef = databaseReference.child("users").child(currentUser.getUid()).child("wishlist").child(productModel.getProductId());
-                                    newWishlistProductRef.setValue(productModel).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                        @Override
-                                        public void onSuccess(Void unused) {
-                                            Toast.makeText(requireContext(), "Added to Wishlist.", Toast.LENGTH_SHORT).show();
-                                            setBookmarkIcon(); // Update bookmark icon after adding
-                                        }
-                                    }).addOnFailureListener(new OnFailureListener() {
-                                        @Override
-                                        public void onFailure(@NonNull Exception e) {
-                                            Toast.makeText(requireContext(), "Failed to add to Wishlist!", Toast.LENGTH_SHORT).show();
-                                        }
-                                    });
-                                } else if (result == 1) { // Product is in wishlist
-                                    databaseReference.child("users").child(currentUser.getUid()).child("wishlist").child(productId).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
-                                        @Override
-                                        public void onSuccess(Void unused) {
-                                            Toast.makeText(requireContext(), "Removed from Wishlist.", Toast.LENGTH_SHORT).show();
-                                            setBookmarkIcon(); // Update bookmark icon after removing
-                                        }
-                                    }).addOnFailureListener(new OnFailureListener() {
-                                        @Override
-                                        public void onFailure(@NonNull Exception e) {
-                                            Toast.makeText(requireContext(), "Failed to remove!", Toast.LENGTH_SHORT).show();
-                                        }
-                                    });
-                                }
-                            }
-                        });
-                    }
-                });
-
-            } else {
-                // Handle the case where receivedProductModelObj is null
-                Toast.makeText(requireContext(), "Failed to receive product details", Toast.LENGTH_SHORT).show();
+        binding.productDetailsAddToCartButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addProductToCart();
             }
-        }
+        });
 
+        binding.bookmarkImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setBookmarkIcon();
+            }
+        });
+
+        binding.bookmarkImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                binding.productDetailsFragmentProgressBar.setVisibility(View.VISIBLE);
+                binding.nestedScrollView.setVisibility(View.GONE);
+                dimScreen();
+                checkIsInWishlist(new WishlistCheckCallback() {
+                    @Override
+                    public void onWishlistCheck(int result) {
+                        binding.productDetailsFragmentProgressBar.setVisibility(View.GONE);
+                        binding.nestedScrollView.setVisibility(View.VISIBLE);
+                        restoreScreenBrightness();
+                        if (result == -1) { // Product is not in wishlist
+//                            ProductModel productModel = new ProductModel(productName, productDescription, productCategory, productImage, productPrice, productId);
+                            DatabaseReference newWishlistProductRef = databaseReference.child("users").child(currentUser.getUid()).child("wishlist").child(productId);
+
+                            newWishlistProductRef.setValue(currentProductModel).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void unused) {
+                                    Toast.makeText(requireContext(), "Added to Wishlist.", Toast.LENGTH_SHORT).show();
+                                    setBookmarkIcon(); // Update bookmark icon after adding
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Toast.makeText(requireContext(), "Failed to add to Wishlist!", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        } else if (result == 1) { // Product is in wishlist
+                            databaseReference.child("users").child(currentUser.getUid()).child("wishlist").child(productId).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void unused) {
+                                    Toast.makeText(requireContext(), "Removed from Wishlist.", Toast.LENGTH_SHORT).show();
+                                    setBookmarkIcon(); // Update bookmark icon after removing
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Toast.makeText(requireContext(), "Failed to remove!", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
+                    }
+                });
+            }
+        });
         return binding.getRoot();
     }
 
@@ -164,10 +155,27 @@ public class ProductDetailFragment extends Fragment {
     }
 
     void setUpProductDetails() {
-        Glide.with(requireContext()).load(productImage).into(binding.productDetailsImageView);
-        binding.productDetailsPriceTextView.setText("Price : INR " + productPrice);
-        binding.productDetailsDescriptionTextView.setText("" + productDescription);
-        binding.productDetailsProductNameTextView.setText("" + productName);
+        databaseReference.child("products").orderByChild("productId").equalTo(productId).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    for (DataSnapshot productSnapshot : snapshot.getChildren()) {
+                        currentProductModel = productSnapshot.getValue(ProductModel.class);
+                    }
+                }
+                //Setting up the views
+                Glide.with(requireContext()).load(currentProductModel.getProductImage()).into(binding.productDetailsImageView);
+                binding.productDetailsProductNameTextView.setText(currentProductModel.getProductName());
+                binding.productDetailsPriceTextView.setText("" + currentProductModel.getProductPrice());
+                binding.productDetailsDescriptionTextView.setText("" + currentProductModel.getProductDescription());
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(requireContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
         databaseReference.child("users").child(currentUser.getUid()).child("cart_items").orderByChild("productId").equalTo(productId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -222,7 +230,7 @@ public class ProductDetailFragment extends Fragment {
                 if (snapshot.exists()) {
                     Toast.makeText(requireContext(), "Product is already in cart!", Toast.LENGTH_SHORT).show();
                 } else {
-                    CartModel cartModel = new CartModel(receivedProductModelObj.getProductName(), receivedProductModelObj.getProductDescription(), receivedProductModelObj.getProductCategory(), receivedProductModelObj.getProductImage(), receivedProductModelObj.getProductPrice(), receivedProductModelObj.getProductId(), 1);
+                    CartModel cartModel = new CartModel(currentProductModel.getProductName(), currentProductModel.getProductDescription(), currentProductModel.getProductCategory(), currentProductModel.getProductImage(), currentProductModel.getProductPrice(), currentProductModel.getProductId(), 1);
                     cartReference = databaseReference.child("users").child(currentUser.getUid()).child("cart_items");
                     DatabaseReference particularCartItemReference = cartReference.child(cartModel.getProductId());
 
